@@ -2,12 +2,13 @@
 pragma solidity 0.8.19;
 
 import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
-import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {CCIPReceiver} from "@chainlink-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+import {Client} from "@chainlink-ccip/src/v0.8/ccip/libraries/Client.sol";
+import {IRouterClient} from "@chainlink-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {AaveStaker} from "./AaveStaker.sol";
 import {Base} from "./Base.sol";
 
-contract Vault is CCIPReceiver, Base {
+contract Vault is AaveStaker, CCIPReceiver, Base {
     using SafeERC20 for IERC20;
 
     uint64 public immutable localChain;
@@ -17,6 +18,7 @@ contract Vault is CCIPReceiver, Base {
     mapping(address user => mapping(address token => uint256 balance)) public unaccountedBalances;
     mapping(address user => uint256 timestamp) public lastOperation;
     mapping(address token => bool status) public supportedTokens;
+    mapping(address token => uint256 unallocated) public freeLiquidity;
 
     event MessageSent(bytes32 indexed messageId);
     event UnconfirmedDeposit(address indexed user, address indexed token, uint256 amount);
@@ -26,7 +28,8 @@ contract Vault is CCIPReceiver, Base {
     event ForcedWithdrawal(address indexed user, address indexed token, uint256 amount);
     event TokenStatusUpdate(address indexed token, bool status);
 
-    constructor(uint64 _localChain, address _accountant, uint64 _accountantChain, address _router)
+    constructor(uint64 _localChain, address _accountant, uint64 _accountantChain, address _router, address _aave)
+        AaveStaker(_aave)
         CCIPReceiver(_router)
     {
         localChain = _localChain;
@@ -58,9 +61,15 @@ contract Vault is CCIPReceiver, Base {
         if (!success) revert Exception("Failed to withdraw");
     }
 
+    function deallocate(address token, uint256 amount) external onlyOwner {
+        _deallocate(token, amount);
+    }
+
     function deposit(address token, uint256 amount) external supportedToken(token) {
         IERC20(token).safeTransferFrom(msg.sender, address(this), amount);
         unaccountedBalances[msg.sender][token] += amount;
+
+        _supplyToAave(token, amount);
 
         Message memory message = Message({
             from: address(this),
@@ -83,6 +92,10 @@ contract Vault is CCIPReceiver, Base {
     }
 
     function withdraw(address token, uint256 amount) external coolOff(msg.sender) {
+        if (freeLiquidity[token] < amount) {
+            _deallocate(token, amount);
+        }
+
         Message memory message = Message({
             from: address(this),
             localChain: localChain,
@@ -97,12 +110,18 @@ contract Vault is CCIPReceiver, Base {
 
     function _processWithdrawal(address user, address token, uint256 amount) internal {
         IERC20(token).safeTransfer(user, amount);
+        freeLiquidity[token] -= amount;
 
         emit Withdrawal(user, token, amount);
     }
 
     function forceWithdraw(address token, uint256 amount) external coolOff(msg.sender) {
         if (unaccountedBalances[msg.sender][token] < amount) revert Exception("Insufficient balance");
+        if (freeLiquidity[token] < amount) {
+            _deallocate(token, amount);
+        } else {
+            freeLiquidity[token] -= amount;
+        }
 
         unaccountedBalances[msg.sender][token] -= amount;
         IERC20(token).safeTransfer(msg.sender, amount);
@@ -110,23 +129,20 @@ contract Vault is CCIPReceiver, Base {
         emit ForcedWithdrawal(msg.sender, token, amount);
     }
 
-    function capture(address token, uint256 amount) external onlyOwner {
-        Message memory message = Message({
-            from: address(this),
-            localChain: localChain,
-            user: msg.sender,
-            token: token,
-            amount: amount,
-            action: Action.CAPTURE
-        });
-        bytes memory data = abi.encode(message);
-        _ccipSend(data);
-    }
-
     function _processCapture(address token, uint256 amount) internal {
+        // @todo this should not be in a callback
+        if (freeLiquidity[token] < amount) {
+            _deallocate(token, amount);
+        } else {
+            freeLiquidity[token] -= amount;
+        }
         IERC20(token).safeTransfer(owner(), amount);
 
         emit Capture(token, amount);
+    }
+
+    function _deallocate(address token, uint256 amount) internal {
+        freeLiquidity[token] += _withdrawFromAave(token, amount, 100);
     }
 
     function _ccipSend(bytes memory data) internal {
