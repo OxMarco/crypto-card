@@ -43,10 +43,6 @@ const AboutPage = () => {
       <Menu />
       <Container maxW={'3xl'}>
         <Stack
-          direction='column'
-          align='center'
-          justify='center'
-          height='100vh'
           as={Box}
           textAlign={'center'}
           spacing={{ base: '8', md: '10' }}
