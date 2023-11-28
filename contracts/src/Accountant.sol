@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity 0.8.19;
 
-import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
-import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
-import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
-import {AutomationCompatible} from "@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol";
+import {CCIPReceiver} from "@chainlink/ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
+import {Client} from "@chainlink/ccip/src/v0.8/ccip/libraries/Client.sol";
+import {IRouterClient} from "@chainlink/ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {Base} from "./Base.sol";
 
 contract Accountant is CCIPReceiver, Base {

@@ -8,10 +8,10 @@ optimizer_runs = 200
 gas_reports = ["*"]
 remappings = [
     'forge-std/=lib/forge-std/src/',
-    '@openzeppelin/=lib/openzeppelin-contracts/',
     '@prb/test/=lib/prb-test/src/',
-    '@chainlink/contracts/=node_modules/@chainlink/contracts',
-    '@chainlink/contracts-ccip/=node_modules/@chainlink/contracts-ccip',
+    '@openzeppelin/=lib/openzeppelin-contracts/',
+    '@chainlink/contracts/=lib/chainlink/contracts/',
+    '@chainlink/ccip/=lib/ccip/contracts/'
 ]
 solc = '0.8.19'
 
