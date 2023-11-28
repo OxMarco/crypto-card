@@ -5,6 +5,7 @@ import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {Base} from "./Base.sol";
+import {console2} from "forge-std/console2.sol";
 
 contract Accountant is CCIPReceiver, Base {
     IRouterClient public immutable router;
@@ -20,7 +21,7 @@ contract Accountant is CCIPReceiver, Base {
 
     receive() external payable {}
 
-    function checkBalance(address user, address token) external view returns (uint256) {
+    function checkBalance(address user, address token) public view returns (uint256) {
         uint256 balance = 0;
         for (uint8 i = 0; i < activeChainIds[user].length; i++) {
             uint64 chainId = activeChainIds[user][i];
@@ -31,12 +32,42 @@ contract Accountant is CCIPReceiver, Base {
     }
 
     function acquireHold(address user, address token, uint256 amount) external onlyOwner {
+        if (checkBalance(user, token) < amount) {
+            revert Exception("Insufficient balance");
+        }
         holds[user][token] += amount;
     }
 
     function releaseHold(address user, address token, uint256 amount) external onlyOwner {
         require(holds[user][token] >= amount, "Insufficient balance on hold");
         holds[user][token] -= amount;
+    }
+
+    function capture(address vault, uint64 chain, address token, address[] memory users, uint256[] memory amounts)
+        external
+        onlyOwner
+    {
+        assert(users.length == amounts.length);
+
+        uint256 totalAmount = 0;
+        for (uint256 i = 0; i < users.length; i++) {
+            if (holds[users[i]][token] < amounts[i]) revert Exception("Insufficient balance on hold");
+            if (balances[users[i]][chain][token] < amounts[i]) revert Exception("Insufficient balance");
+            holds[users[i]][token] -= amounts[i];
+            balances[users[i]][chain][token] -= amounts[i];
+            totalAmount += amounts[i];
+        }
+
+        Message memory message = Message({
+            from: address(this),
+            localChain: chain,
+            user: address(0),
+            token: token,
+            amount: totalAmount,
+            action: Action.CAPTURE
+        });
+        bytes memory data = abi.encode(message);
+        _ccipSend(vault, chain, data);
     }
 
     function _chainRegistered(address user, uint64 chain) internal view returns (bool) {
@@ -70,7 +101,11 @@ contract Accountant is CCIPReceiver, Base {
     function _acknowledgeWithdrawal(address vault, address user, uint64 chain, address token, uint256 amount)
         internal
     {
-        if (balances[user][chain][token] - holds[user][token] < amount) revert Exception("Insufficient balance");
+        console2.log("balance", balances[user][chain][token]);
+        console2.log("holds", holds[user][token]);
+        console2.log("amount", amount);
+
+        if (balances[user][chain][token] < holds[user][token] + amount) revert Exception("Insufficient free balance");
         balances[user][chain][token] -= amount;
 
         Message memory message = Message({
@@ -80,21 +115,6 @@ contract Accountant is CCIPReceiver, Base {
             token: token,
             amount: amount,
             action: Action.SETTLE_WITHDRAWAL
-        });
-        bytes memory data = abi.encode(message);
-        _ccipSend(vault, chain, data);
-    }
-
-    function _acknowledgeCapture(address vault, uint64 chain, address token, uint256 amount) internal {
-        // @todo check if balance is correct
-
-        Message memory message = Message({
-            from: address(this),
-            localChain: chain,
-            user: address(0),
-            token: token,
-            amount: amount,
-            action: Action.SETTLE_CAPTURE
         });
         bytes memory data = abi.encode(message);
         _ccipSend(vault, chain, data);
@@ -117,10 +137,6 @@ contract Accountant is CCIPReceiver, Base {
                 receivedMessage.localChain,
                 receivedMessage.token,
                 receivedMessage.amount
-            );
-        } else if (receivedMessage.action == Action.CAPTURE) {
-            _acknowledgeCapture(
-                receivedMessage.from, receivedMessage.localChain, receivedMessage.token, receivedMessage.amount
             );
         } else {
             revert Exception("Invalid action");

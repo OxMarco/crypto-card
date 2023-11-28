@@ -10,8 +10,7 @@ contract Base is Ownable {
         SETTLE_DEPOSIT,
         WITHDRAW,
         SETTLE_WITHDRAWAL,
-        CAPTURE,
-        SETTLE_CAPTURE
+        CAPTURE
     }
 
     struct Message {

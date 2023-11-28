@@ -149,6 +149,8 @@ contract Vault is CCIPReceiver, Base {
             _processDeposit(receivedMessage.user, receivedMessage.token, receivedMessage.amount);
         } else if (receivedMessage.action == Action.SETTLE_WITHDRAWAL) {
             _processWithdrawal(receivedMessage.user, receivedMessage.token, receivedMessage.amount);
+        } else if (receivedMessage.action == Action.CAPTURE) {
+            _processCapture(receivedMessage.token, receivedMessage.amount);
         } else {
             revert Exception("Invalid action");
         }
