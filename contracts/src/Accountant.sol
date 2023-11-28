@@ -4,8 +4,8 @@ pragma solidity 0.8.19;
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
+import {AutomationCompatible} from "@chainlink/contracts/src/v0.8/automation/AutomationCompatible.sol";
 import {Base} from "./Base.sol";
-import {console2} from "forge-std/console2.sol";
 
 contract Accountant is CCIPReceiver, Base {
     IRouterClient public immutable router;
@@ -101,10 +101,6 @@ contract Accountant is CCIPReceiver, Base {
     function _acknowledgeWithdrawal(address vault, address user, uint64 chain, address token, uint256 amount)
         internal
     {
-        console2.log("balance", balances[user][chain][token]);
-        console2.log("holds", holds[user][token]);
-        console2.log("amount", amount);
-
         if (balances[user][chain][token] < holds[user][token] + amount) revert Exception("Insufficient free balance");
         balances[user][chain][token] -= amount;
 

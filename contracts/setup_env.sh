@@ -23,13 +23,16 @@ done
 cast rpc anvil_stopImpersonatingAccount $WHALE --rpc-url=$RPC_URL
 
 # Deploy contracts
-MOCKROUTER=$(forge create src/MockRouter.sol:MockRouter --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY)
+MOCKROUTER=$(forge create src/mocks/MockRouter.sol:MockRouter --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY)
 export MOCKROUTER_ADDRESS=$(echo "$MOCKROUTER" | grep "Deployed to:" | awk '{print $3}')
+
+MOCKAAVE=$(forge create src/mocks/MockAave.sol:MockAave --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY)
+export MOCKAAVE_ADDRESS=$(echo "$MOCKAAVE" | grep "Deployed to:" | awk '{print $3}')
 
 ACCOUNTANT=$(forge create src/Accountant.sol:Accountant --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY --constructor-args $MOCKROUTER_ADDRESS)
 export ACCOUNTANT_ADDRESS=$(echo "$ACCOUNTANT" | grep "Deployed to:" | awk '{print $3}')
 
-VAULT=$(forge create src/Vault.sol:Vault --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY --constructor-args 0 $ACCOUNTANT_ADDRESS 0 $MOCKROUTER_ADDRESS)
+VAULT=$(forge create src/Vault.sol:Vault --rpc-url=$RPC_URL --private-key=$DEPLOYER_PRIVATE_KEY --constructor-args 0 $ACCOUNTANT_ADDRESS 0 $MOCKROUTER_ADDRESS $MOCKAAVE_ADDRESS)
 export VAULT_ADDRESS=$(echo "$VAULT" | grep "Deployed to:" | awk '{print $3}')
 
 # Whitelist tokens
