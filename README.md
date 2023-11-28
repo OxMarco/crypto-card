@@ -7,7 +7,7 @@ A public goods project aimed at creating the cheapest crypto debit card, with no
 - Pay anywhere in the world where Visa or Mastercard is accepted
 - Control daily and monthly spend limits, pause and block cards
 - Dispute fraudulent transactions
-- Get notified of any card activity via Push protocol
+- Automatic capturing using ChainLink automation
 
 ## Project structure
 * **Backend** responsible for basic CRUD requests, displaying, updating and creating new resources (users, cards and disputes), built with NestJS and MongoDb on top of Stripe Issuing API
@@ -30,6 +30,7 @@ It could be particularly useful for users who operate on multiple blockchains an
 
 **1. Accountant Contract:**
    - This contract acts as the central manager of user balances across different blockchain networks. It maintains records of user balances in a multi-chain environment and handles operations like acquiring and releasing holds on funds. The contract interacts with other contracts and systems via the Chainlink CCIP (Cross-Chain Interoperability Protocol), allowing it to send and receive messages across different blockchains. Functions include checking balances, capturing funds, and acknowledging deposits and withdrawals.
+   Chainlink Automation bots automatically trigger the capture function when enough funds have been accrued to avoid useless gas expenses for micropayments.
 
 **2. Vault Contract:**
    - The Vault contract is responsible for the direct management of users' funds. It supports deposit and withdrawal functions, enabling users to transfer their assets into and out of the system. It also incorporates a cool-off period to prevent rapid, repeated transactions that could frontrun a card payment. The contract can force withdraw funds, toggle token support status, and sweep unallocated funds to the owner. It uses the Chainlink CCIP to communicate with the Accountant contract for cross-chain operations, ensuring that deposits and withdrawals are correctly acknowledged and processed across blockchains.

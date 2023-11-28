@@ -11,7 +11,7 @@ remappings = [
     '@prb/test/=lib/prb-test/src/',
     '@openzeppelin/=lib/openzeppelin-contracts/',
     '@chainlink/contracts/=lib/chainlink/contracts/',
-    '@chainlink/ccip/=lib/ccip/contracts/'
+    '@chainlink-ccip/=lib/ccip/contracts/'
 ]
 solc = '0.8.19'
 

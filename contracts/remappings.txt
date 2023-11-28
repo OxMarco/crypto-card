@@ -2,5 +2,5 @@ ds-test/=lib/forge-std/lib/ds-test/src/
 forge-std/=lib/forge-std/src/
 @prb/test/=lib/prb-test/src/
 @openzeppelin/=lib/openzeppelin-contracts/
-@chainlink/contracts/=lib/chainlink/contracts/
-@chainlink/ccip/=lib/ccip/contracts/
+@chainlink/=lib/chainlink/
+@chainlink-ccip/=lib/ccip/contracts/

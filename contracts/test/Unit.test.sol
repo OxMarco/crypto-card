@@ -163,11 +163,13 @@ contract UnitTest is PRBTest, StdCheats {
 
         vm.startPrank(DEPLOYER);
         accountant.acquireHold(address(this), address(token), capture);
-        uint256[] memory amounts = new uint256[](1);
-        amounts[0] = capture;
         address[] memory users = new address[](1);
         users[0] = address(this);
-        accountant.capture(address(vault1), 0, address(token), users, amounts);
+        bytes memory checkData = abi.encode(address(vault1), uint64(0), address(token), users);
+        (bool execute, bytes memory data) = accountant.checkUpkeep(checkData);
+        if (execute) {
+            accountant.performUpkeep(data);
+        }
         vm.stopPrank();
 
         assertEq(token.balanceOf(DEPLOYER), capture);
