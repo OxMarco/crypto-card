@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   UseGuards,
+  Request
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
@@ -29,6 +30,7 @@ export class UserController {
     return await this.userService.getAll();
   }
 
+  @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'Get a specific user' })
   @ApiResponse({
     status: 200,
@@ -57,5 +59,12 @@ export class UserController {
   @Put()
   async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
     return await this.userService.update(updateUserDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/logout')
+  logout(@Request() req: any): any {
+    req.session.destroy();
+    return { msg: 'The user session has ended' }
   }
 }
