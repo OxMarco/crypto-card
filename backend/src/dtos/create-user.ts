@@ -12,6 +12,7 @@ import {
   IsAlphanumeric,
   MaxDate,
   IsStrongPassword,
+  IsEthereumAddress,
 } from 'class-validator';
 
 const eighteenYearsAgo = new Date();
@@ -26,13 +27,9 @@ export class CreateUserDto {
   @IsNotEmpty()
   lastName: string;
 
-  @IsAlphanumeric()
+  @IsEthereumAddress()
   @IsNotEmpty()
-  username: string;
-
-  @IsStrongPassword()
-  @IsNotEmpty()
-  password: string;
+  ethereumAddress: string;
 
   @IsUrl()
   @IsOptional()

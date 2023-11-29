@@ -11,6 +11,7 @@ import { CardModule } from './card/card.module';
 import { AuthModule } from './auth/auth.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { DisputeModule } from './dispute/dispute.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -32,8 +33,11 @@ import { DisputeModule } from './dispute/dispute.module';
     TransactionModule,
     DisputeModule,
     AuthModule,
+    MongooseModule.forRoot(
+      'mongodb://localhost:27017/crypto-card'
+    )
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

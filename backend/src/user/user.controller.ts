@@ -17,7 +17,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 @Controller('user')
 @ApiTags('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @ApiOperation({ summary: 'Get all users' })
   @ApiResponse({
@@ -35,7 +35,7 @@ export class UserController {
     type: UserEntity,
   })
   @Get('/get/:id')
-  async getById(@Param('id') id: string): Promise<UserEntity> {
+  async getById(@Param('id') id: string) {
     return await this.userService.getById(id);
   }
 
