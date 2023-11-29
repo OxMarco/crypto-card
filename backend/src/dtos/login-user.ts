@@ -1,11 +1,7 @@
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import { IsEthereumAddress, IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginUserDto {
-  @IsString()
   @IsNotEmpty()
-  username: string;
-
-  @IsString()
-  @IsNotEmpty()
-  password: string;
+  @IsEthereumAddress()
+  ethereumAddress: string;
 }

@@ -19,15 +19,15 @@ export class UserService {
       });
 
     const userEntity = new UserEntity();
-    // userEntity.id = cardholder.id;
+    userEntity.id = cardholder.id;
     userEntity.ethereumAddress = cardholder.metadata.ethereumAddress;
-    // userEntity.avatar = cardholder.metadata.username;
-    // userEntity.firstName = cardholder.individual?.first_name || undefined;
-    // userEntity.lastName = cardholder.individual?.last_name || undefined;
-    // userEntity.phone = cardholder.phone_number || undefined;
-    // userEntity.email = cardholder.email || undefined;
-    // userEntity.status = cardholder.status;
-    // userEntity.createdAt = cardholder.created;
+    userEntity.avatar = cardholder.metadata.username;
+    userEntity.firstName = cardholder.individual?.first_name || undefined;
+    userEntity.lastName = cardholder.individual?.last_name || undefined;
+    userEntity.phone = cardholder.phone_number || undefined;
+    userEntity.email = cardholder.email || undefined;
+    userEntity.status = cardholder.status;
+    userEntity.createdAt = cardholder.created;
     return userEntity;
   }
 
@@ -43,10 +43,8 @@ export class UserService {
   //   return this._parseUser(cardholder);
   // }
 
-  async getById(id: string) {
-    const ethereumAddress = id.toLowerCase()
+  async getById(ethereumAddress: any) {
     const user = await this.userModel.findOne({ ethereumAddress })
-
     return user;
   }
 

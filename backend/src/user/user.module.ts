@@ -14,5 +14,6 @@ import { UserSchema } from './users.model';
   ])],
   controllers: [UserController],
   providers: [UserService, StripeService],
+  exports: [UserService]
 })
 export class UserModule { }

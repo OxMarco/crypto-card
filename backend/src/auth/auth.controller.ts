@@ -3,11 +3,13 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from './auth.guard';
 import { LoginUserDto } from 'src/dtos/login-user';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { LocalAuthGuard } from './local.auth.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
+  // @UseGuards(LocalAuthGuard)
   @ApiOperation({ summary: 'Perform login' })
   @ApiResponse({
     status: 200,
@@ -15,7 +17,7 @@ export class AuthController {
   })
   @Post('login')
   async signIn(@Body() loginDto: LoginUserDto) {
-    return await this.authService.login(loginDto.username, loginDto.password);
+    return await this.authService.login(loginDto);
   }
 
   @ApiOperation({ summary: 'Return login status' })
@@ -23,7 +25,7 @@ export class AuthController {
     status: 200,
     type: 'object',
   })
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   @Get('status')
   status() {
     return { status: true };
