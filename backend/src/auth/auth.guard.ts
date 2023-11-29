@@ -5,15 +5,13 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private jwtSecret: string;
 
-  constructor(private configService: ConfigService, private jwtService: JwtService) {
-    this.jwtSecret = configService.get<string>('JWT_SECRET') || '';
+  constructor(private configService: ConfigService) {
+
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -23,15 +21,10 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.verifyAsync(
-        token,
-        {
-          secret: this.jwtSecret
-        }
-      );
+      // const payload;
       // 💡 We're assigning the payload to the request object here
       // so that we can access it in our route handlers
-      request['user'] = payload;
+      // request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
     }

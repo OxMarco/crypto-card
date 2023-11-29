@@ -1,12 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Request } from 'express';
 import { StripeService } from 'src/stripe/stripe.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private stripeService: StripeService, private jwtService: JwtService) {}
+  constructor(private stripeService: StripeService) { }
 
   async login(username: string, password: string): Promise<any> {
     const cardholders = await this.stripeService.getAllCardholders();
@@ -15,7 +14,7 @@ export class AuthService {
         if (await bcrypt.compare(password, cardholder.metadata.password)) {
           const payload = { cardholderId: cardholder.id, username: cardholder.metadata.username };
           return {
-            access_token: await this.jwtService.signAsync(payload),
+
           };
         }
       }
