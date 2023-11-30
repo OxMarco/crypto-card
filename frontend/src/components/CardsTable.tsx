@@ -13,8 +13,10 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from '@chakra-ui/react';
 import { FiPause, FiPlay, FiSlash } from 'react-icons/fi';
+import { handleResponse } from '../utils/response-helper';
 
 export const CardsTable = ({
   props,
@@ -23,6 +25,7 @@ export const CardsTable = ({
   props?: TableProps;
   accessToken: string;
 }) => {
+  const toast = useToast();
   const [cards, setCards] = useState<any[]>([]);
 
   useEffect(() => {
@@ -37,8 +40,10 @@ export const CardsTable = ({
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    const cards = await res.json();
-    setCards(cards);
+    if (await handleResponse(res, toast, '', 'Failed to load cards')) {
+      const cards = await res.json();
+      setCards(cards);
+    }
   };
 
   const pauseCard = async (cardId: string) => {
@@ -50,9 +55,16 @@ export const CardsTable = ({
       },
       body: JSON.stringify({ cardId, status: 'inactive' }),
     });
-    const response = await res.json();
-    console.log('response', response);
-    await load();
+    if (
+      await handleResponse(
+        res,
+        toast,
+        'Card successfully paused',
+        'Failed to pause card',
+      )
+    ) {
+      await load();
+    }
   };
 
   const unpauseCard = async (cardId: string) => {
@@ -64,9 +76,17 @@ export const CardsTable = ({
       },
       body: JSON.stringify({ cardId, status: 'active' }),
     });
-    const response = await res.json();
-    console.log('response', response);
-    await load();
+
+    if (
+      await handleResponse(
+        res,
+        toast,
+        'Card successfully activated',
+        'Failed to created card',
+      )
+    ) {
+      await load();
+    }
   };
 
   const blockCard = async (cardId: string) => {
@@ -78,9 +98,16 @@ export const CardsTable = ({
       },
       body: JSON.stringify({ cardId, status: 'canceled' }),
     });
-    const response = await res.json();
-    console.log('response', response);
-    await load();
+    if (
+      await handleResponse(
+        res,
+        toast,
+        'Card successfully blocked',
+        'Failed to blocked card',
+      )
+    ) {
+      await load();
+    }
   };
 
   return (
@@ -95,84 +122,86 @@ export const CardsTable = ({
         </Tr>
       </Thead>
       <Tbody>
-        {cards
-          .sort(
-            (a: any, b: any) =>
-              new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-          )
-          .map((d: any, index: number) => (
-            <Tr key={index}>
-              <Td>
-                <HStack spacing="3">
-                  <Box>
-                    <Text fontWeight="medium">{d.brand}</Text>
-                    <Text color="fg.muted">{d.last4}</Text>
-                  </Box>
-                </HStack>
-              </Td>
-              <Td>
-                <HStack spacing="3">
-                  <Box>
-                    <Text fontWeight="medium" fontStyle="italic">
-                      {d.type}
-                    </Text>
-                    <Text fontWeight="light" color="fg.muted">
-                      {d.currency}
-                    </Text>
-                  </Box>
-                </HStack>
-              </Td>
-              <Td>
-                {d.status === 'active' && (
-                  <Badge size="sm" colorScheme={'green'}>
-                    Active
-                  </Badge>
-                )}
-                {d.status === 'inactive' && (
-                  <Badge size="sm" colorScheme={'yellow'}>
-                    Suspended
-                  </Badge>
-                )}
-                {d.status === 'canceled' && (
-                  <Badge size="sm" colorScheme={'red'}>
-                    Blocked
-                  </Badge>
-                )}
-              </Td>
-              <Td>
-                {d.status !== 'canceled' && (
-                  <HStack spacing="1">
-                    {d.status === 'inactive' ? (
-                      <IconButton
-                        icon={<FiPlay />}
-                        variant="tertiary"
-                        aria-label="Pause card"
-                        onClick={() => unpauseCard(d.cardId)}
-                      />
-                    ) : (
-                      <IconButton
-                        icon={<FiPause />}
-                        variant="tertiary"
-                        aria-label="Unause card"
-                        onClick={() => pauseCard(d.cardId)}
-                      />
-                    )}
-                    <IconButton
-                      icon={<FiSlash />}
-                      variant="tertiary"
-                      aria-label="Block card"
-                      onClick={() => blockCard(d.cardId)}
-                    />
+        {cards &&
+          cards
+            .sort(
+              (a: any, b: any) =>
+                new Date(b.updatedAt).getTime() -
+                new Date(a.updatedAt).getTime(),
+            )
+            .map((d: any, index: number) => (
+              <Tr key={index}>
+                <Td>
+                  <HStack spacing="3">
+                    <Box>
+                      <Text fontWeight="medium">{d.brand}</Text>
+                      <Text color="fg.muted">{d.last4}</Text>
+                    </Box>
                   </HStack>
-                )}
-              </Td>
-              <Td>
-                <Button as="a" href="/cards/detail" variant="outline">
-                  View
-                </Button>
-              </Td>
-            </Tr>
-          ))}
+                </Td>
+                <Td>
+                  <HStack spacing="3">
+                    <Box>
+                      <Text fontWeight="medium" fontStyle="italic">
+                        {d.type}
+                      </Text>
+                      <Text fontWeight="light" color="fg.muted">
+                        {d.currency}
+                      </Text>
+                    </Box>
+                  </HStack>
+                </Td>
+                <Td>
+                  {d.status === 'active' && (
+                    <Badge size="sm" colorScheme={'green'}>
+                      Active
+                    </Badge>
+                  )}
+                  {d.status === 'inactive' && (
+                    <Badge size="sm" colorScheme={'yellow'}>
+                      Suspended
+                    </Badge>
+                  )}
+                  {d.status === 'canceled' && (
+                    <Badge size="sm" colorScheme={'red'}>
+                      Blocked
+                    </Badge>
+                  )}
+                </Td>
+                <Td>
+                  {d.status !== 'canceled' && (
+                    <HStack spacing="1">
+                      {d.status === 'inactive' ? (
+                        <IconButton
+                          icon={<FiPlay />}
+                          variant="tertiary"
+                          aria-label="Pause card"
+                          onClick={() => unpauseCard(d.cardId)}
+                        />
+                      ) : (
+                        <IconButton
+                          icon={<FiPause />}
+                          variant="tertiary"
+                          aria-label="Unause card"
+                          onClick={() => pauseCard(d.cardId)}
+                        />
+                      )}
+                      <IconButton
+                        icon={<FiSlash />}
+                        variant="tertiary"
+                        aria-label="Block card"
+                        onClick={() => blockCard(d.cardId)}
+                      />
+                    </HStack>
+                  )}
+                </Td>
+                <Td>
+                  <Button as="a" href="/cards/detail" variant="outline">
+                    View
+                  </Button>
+                </Td>
+              </Tr>
+            ))}
       </Tbody>
     </Table>
   );

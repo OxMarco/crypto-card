@@ -16,6 +16,7 @@ import {
   useToast,
   Tag,
 } from '@chakra-ui/react';
+import { handleResponse } from '../utils/response-helper';
 
 const NewCardModal = ({
   accessToken,
@@ -32,7 +33,7 @@ const NewCardModal = ({
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const req = await fetch(`http://localhost:3000/card`, {
+    const res = await fetch(`http://localhost:3000/card`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -43,25 +44,17 @@ const NewCardModal = ({
         currency,
       }),
     });
-    const response = await req.json();
-    if (!response?.brand) {
-      console.log(response);
-      toast({
-        title: 'An error occurred',
-        description: response.message,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: 'Card created.',
-        description: `A new ${cardType} card with currency ${currency} has been created.`,
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-      });
+
+    if (
+      await handleResponse(
+        res,
+        toast,
+        'Card successfully created',
+        'Failed to created card',
+      )
+    ) {
       onClose();
+      window.location.reload();
     }
   };
 

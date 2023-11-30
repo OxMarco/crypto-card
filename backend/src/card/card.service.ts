@@ -24,13 +24,22 @@ export class CardService {
     return card;
   }
 
-  async createCard(cardholderId: string, createCardDto: CreateCardDto): Promise<Card> {
+  async createCard(
+    cardholderId: string,
+    createCardDto: CreateCardDto,
+  ): Promise<Card> {
     const user = await this.stripeService.searchCardholder(cardholderId);
-    if(!user) throw new NotFoundException({ error: 'User not found' });
-    
-    let shippingData: any = null;
-    if(createCardDto.type === 'physical') {
-      shippingData = {
+    if (!user) throw new NotFoundException({ error: 'User not found' });
+
+    const cardData: any = {
+      cardholder: cardholderId,
+      type: createCardDto.type as any,
+      currency: createCardDto.currency as any,
+    };
+
+    const shippingData: any = null;
+    if (createCardDto.type === 'physical') {
+      cardData.shipping = {
         address: {
           city: user.billing.address.city,
           country: user.billing.address.country,
@@ -39,8 +48,8 @@ export class CardService {
         },
         name: user.individual?.first_name + ' ' + user.individual?.last_name,
         phone_number: user.phone_number,
-        service: 'standard'
-      }
+        service: 'standard',
+      };
 
       if (user.billing.address.line2) {
         shippingData.address.line2 = user.billing.address.line2;
@@ -50,14 +59,8 @@ export class CardService {
         shippingData.address.state = user.billing.address.state;
       }
     }
-    
-    const card = await this.stripeService.createCard({
-      cardholder: cardholderId,
-      type: createCardDto.type as any,
-      currency: createCardDto.currency as any,
-      shipping: shippingData
-    });
 
+    const card = await this.stripeService.createCard(cardData);
     const newCard = new this.cardModel({
       cardId: card.id,
       cardholderId: card.cardholder.id,
@@ -66,23 +69,28 @@ export class CardService {
       expMonth: card.exp_month,
       expYear: card.exp_year,
       last4: card.last4,
-      brand: "Visas",
+      brand: 'Visas',
       status: card.status,
     });
 
     return await newCard.save();
   }
 
-  async updateCard(cardholderId: string, updateCardDto: UpdateCardDto): Promise<Card> {
+  async updateCard(
+    cardholderId: string,
+    updateCardDto: UpdateCardDto,
+  ): Promise<Card> {
     const updatedCard = await this.cardModel
       .findOneAndUpdate(
-          { cardId: updateCardDto.cardId, cardholderId: cardholderId },
-          { status: updateCardDto.status },
-          { new: true }
+        { cardId: updateCardDto.cardId, cardholderId: cardholderId },
+        { status: updateCardDto.status },
+        { new: true },
       )
       .exec();
     if (!updatedCard) throw new NotFoundException({ error: 'Card not found' });
-    await this.stripeService.updateCard(updateCardDto.cardId, { status: updateCardDto.status });
+    await this.stripeService.updateCard(updateCardDto.cardId, {
+      status: updateCardDto.status,
+    });
 
     return updatedCard;
   }

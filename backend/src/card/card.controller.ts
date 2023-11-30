@@ -31,7 +31,7 @@ export class CardController {
   })
   @Get()
   async getAll(@Req() req: Request) {
-    const cardholderId: string = (req as any).cardholderId
+    const cardholderId: string = (req as any).cardholderId;
     return await this.cardService.getAll(cardholderId);
   }
 
@@ -52,8 +52,8 @@ export class CardController {
   })
   @Post()
   async createCard(@Body() createCardDto: CreateCardDto, @Req() req: Request) {
-    const cardholderId: string = (req as any).cardholderId
-    return await this.cardService.createCard(cardholderId, createCardDto)
+    const cardholderId: string = (req as any).cardholderId;
+    return await this.cardService.createCard(cardholderId, createCardDto);
   }
 
   @ApiOperation({ summary: 'Create a new card for a certain user' })
@@ -63,7 +63,7 @@ export class CardController {
   })
   @Put()
   async updateCard(@Body() updateCardDto: UpdateCardDto, @Req() req: Request) {
-    const cardholderId: string = (req as any).cardholderId
-    return await this.cardService.updateCard(cardholderId, updateCardDto)
+    const cardholderId: string = (req as any).cardholderId;
+    return await this.cardService.updateCard(cardholderId, updateCardDto);
   }
 }

@@ -28,10 +28,9 @@ import { AuthGuard } from './auth.guard';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }, 
+    },
     StripeService,
   ],
   exports: [AuthService],
-
 })
 export class AuthModule {}

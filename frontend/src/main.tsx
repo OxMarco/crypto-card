@@ -41,7 +41,7 @@ const router = createBrowserRouter([
     element: <VaultsPage />,
   },
   {
-    path: '/vaults/:chain',
+    path: '/vaults/:chainSlug',
     element: <VaultDetailPage />,
   },
   {

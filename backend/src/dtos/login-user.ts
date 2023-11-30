@@ -1,4 +1,9 @@
-import { IsEthereumAddress, IsJSON, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsEthereumAddress,
+  IsJSON,
+  IsNotEmpty,
+  IsString,
+} from 'class-validator';
 
 export class LoginUserDto {
   @IsEthereumAddress()

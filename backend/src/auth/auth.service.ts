@@ -37,7 +37,7 @@ export class AuthService {
     if (cardholder.status !== 'active')
       throw new UnauthorizedException({ error: 'Inactive user' });
 
-      try {
+    try {
       const SIWEObject = new SiweMessage(JSON.parse(loginDto.message));
       const { data: msg } = await SIWEObject.verify({
         signature: loginDto.signature,
@@ -45,9 +45,12 @@ export class AuthService {
       });
 
       return {
-        id: user.id, 
+        id: user.id,
         cardholderId: user.cardholderId,
-        accessToken: await this.jwtService.signAsync({ id: user.id, cardholderId: user.cardholderId }),
+        accessToken: await this.jwtService.signAsync({
+          id: user.id,
+          cardholderId: user.cardholderId,
+        }),
       };
     } catch (e) {
       if (e == SiweErrorType.EXPIRED_MESSAGE) {

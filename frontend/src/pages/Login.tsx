@@ -67,6 +67,8 @@ export const LoginPage = () => {
           signature: signMessageData,
         });
 
+        console.log('performing signup');
+
         await signUp({
           firstName,
           lastName,
@@ -125,8 +127,8 @@ export const LoginPage = () => {
     });
     const user = await res.json();
     console.log(user);
-    console.log(res.status)
-    console.log(res)
+    console.log(res.status);
+    console.log(res);
   };
 
   return (
@@ -135,7 +137,6 @@ export const LoginPage = () => {
       <Box
         bgGradient={{ base: 'white', sm: 'linear(to-r, blue.600, blue.400)' }}
         py={{ base: '12', md: '24' }}
-        minH={'100vh'}
       >
         <Container
           maxW="md"
@@ -151,10 +152,11 @@ export const LoginPage = () => {
               <Tab>Register</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel  h={{
-                base: '80vh',
-                sm: '30vh'
-                }} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+              <TabPanel
+                display={'flex'}
+                alignItems={'center'}
+                justifyContent={'center'}
+              >
                 {/* <Flex > */}
                 <Stack spacing="8">
                   <Stack spacing="6" align="center">
@@ -165,7 +167,7 @@ export const LoginPage = () => {
                       </Text>
                     </Stack>
                   </Stack>
-                  <Stack spacing="6" alignItems={'center'} >
+                  <Stack spacing="6" alignItems={'center'}>
                     {isConnected ? (
                       <SignInButton
                         onSuccess={loginSuccessful}
@@ -269,7 +271,7 @@ export const LoginPage = () => {
                             <option value="ES">Spain</option>
                             <option value="HU">Hungary</option>
                             <option value="LT">Lithuania</option>
-                            </Select>
+                          </Select>
                         </FormControl>
                         <FormControl id="poBox">
                           <FormLabel>Po. Box</FormLabel>

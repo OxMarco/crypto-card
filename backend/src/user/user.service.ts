@@ -26,7 +26,7 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     // @todo validate signature
-  
+
     const cardholder = await this.stripeService.createCardholder({
       name: createUserDto.firstName + ' ' + createUserDto.lastName,
       email: createUserDto.email,
