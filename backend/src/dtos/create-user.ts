@@ -59,4 +59,8 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   poBox: string;
+
+  @IsString()
+  @IsNotEmpty()
+  signature: string;
 }

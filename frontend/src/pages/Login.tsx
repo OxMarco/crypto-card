@@ -11,6 +11,7 @@ import {
   InputGroup,
   InputLeftElement,
   Link,
+  Select,
   Stack,
   Tab,
   TabList,
@@ -31,7 +32,6 @@ import { FiPhone } from 'react-icons/fi';
 export const LoginPage = () => {
   const navigate = useNavigate();
   const { isConnected } = useAccount();
-  const [recoveredAddress, setRecoveredAddress] = useState<string>('');
   const {
     data: signMessageData,
     error,
@@ -41,6 +41,16 @@ export const LoginPage = () => {
   } = useSignMessage();
   const { accessToken, saveId, saveCardholderId, saveAccessToken } =
     useContext(AppContext);
+
+  const [firstName, setFirstName] = useState<string>('John');
+  const [lastName, setLastName] = useState<string>('Doe');
+  const [dob, setDob] = useState<Date>();
+  const [email, setEmail] = useState<string>('john@doe.com');
+  const [phone, setPhone] = useState<string>('+420123456789');
+  const [address, setAddress] = useState<string>('Am Kreuzberg 3');
+  const [city, setCity] = useState<string>('Berlin');
+  const [countryCode, setCountryCode] = useState<string>('DE');
+  const [poBox, setPoBox] = useState<string>('10212');
 
   useEffect(() => {
     if (accessToken !== '') {
@@ -55,7 +65,20 @@ export const LoginPage = () => {
           message: variables?.message,
           signature: signMessageData,
         });
-        setRecoveredAddress(addr);
+
+        await signUp({
+          firstName,
+          lastName,
+          wallet: addr,
+          dob,
+          email,
+          phone,
+          address,
+          city,
+          countryCode,
+          poBox,
+          signature: signMessageData,
+        });
       }
     })();
   }, [signMessageData, variables?.message]);
@@ -72,27 +95,38 @@ export const LoginPage = () => {
     console.log(error);
   };
 
-  const signTos = (event: any) => {
-    const formData = new FormData(event.target);
+  const signTos = () => {
     const message =
       'I, ' +
-      formData.get('firstName') +
+      firstName +
       ' ' +
-      formData.get('lastName') +
+      lastName +
       ', living in ' +
-      formData.get('address') +
+      address +
       ' ' +
-      formData.get('poBox') +
+      poBox +
       ', ' +
-      formData.get('city') +
+      city +
       ' (' +
-      formData.get('country') +
+      countryCode +
       ')' +
       ' agree to the terms and conditions of this service.';
     signMessage({ message });
   };
 
-  const signUp = () => {};
+  const signUp = async (data: any) => {
+    const res = await fetch('http://localhost:3000/user', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    const user = await res.json();
+    console.log(user);
+    console.log(res.status)
+    console.log(res)
+  };
 
   return (
     <>
@@ -176,26 +210,29 @@ export const LoginPage = () => {
                         <FormControl id="firstName">
                           <FormLabel>First Name</FormLabel>
                           <Input
-                            defaultValue="John"
                             id="firstName"
                             name="firstName"
+                            onChange={(e) => setFirstName(e.target.value)}
+                            value={firstName}
                           />
                         </FormControl>
                         <FormControl id="lastName">
                           <FormLabel>Last Name</FormLabel>
                           <Input
-                            defaultValue="Doe"
                             id="lastName"
                             name="lastName"
+                            onChange={(e) => setLastName(e.target.value)}
+                            value={lastName}
                           />
                         </FormControl>
                       </Stack>
                       <FormControl id="address">
                         <FormLabel>Street</FormLabel>
                         <Input
-                          defaultValue="Am Kreuzberg 3"
                           id="address"
                           name="address"
+                          onChange={(e) => setAddress(e.target.value)}
+                          value={address}
                         />
                       </FormControl>
                       <Stack
@@ -204,24 +241,49 @@ export const LoginPage = () => {
                       >
                         <FormControl id="city">
                           <FormLabel>City</FormLabel>
-                          <Input defaultValue="Berlin" id="city" name="city" />
+                          <Input
+                            id="city"
+                            name="city"
+                            onChange={(e) => setCity(e.target.value)}
+                            value={city}
+                          />
                         </FormControl>
                         <FormControl id="country">
                           <FormLabel>Country</FormLabel>
-                          <Input
-                            defaultValue="Germany"
+                          <Select
                             id="country"
                             name="country"
-                          />
+                            onChange={(e) => setCountryCode(e.target.value)}
+                            value={countryCode}
+                          >
+                            <option value="DE">Germany</option>
+                            <option value="IT">Italy</option>
+                            <option value="FR">France</option>
+                            <option value="ES">Spain</option>
+                            <option value="HU">Hungary</option>
+                            <option value="LT">Lithuania</option>
+                            </Select>
                         </FormControl>
                         <FormControl id="poBox">
-                          <FormLabel>ZIP/PoBox</FormLabel>
-                          <Input defaultValue="10961" id="poBox" name="poBox" />
+                          <FormLabel>Po. Box</FormLabel>
+                          <Input
+                            id="poBox"
+                            name="poBox"
+                            onChange={(e) => setPoBox(e.target.value)}
+                            value={poBox}
+                          />
                         </FormControl>
                       </Stack>
                       <FormControl id="dob">
                         <FormLabel>Date of Birth</FormLabel>
-                        <Input size="md" type="date" id="dob" name="dob" />
+                        <Input
+                          size="md"
+                          type="date"
+                          id="dob"
+                          name="dob"
+                          onChange={(e) => setDob(new Date(e.target.value))}
+                          value={dob?.toISOString().substr(0, 10)}
+                        />
                       </FormControl>
                       <Stack spacing={4}>
                         <FormLabel>Contacts</FormLabel>
@@ -231,9 +293,10 @@ export const LoginPage = () => {
                           </InputLeftElement>
                           <Input
                             type="tel"
-                            placeholder="+49123456..."
                             id="phone"
                             name="phone"
+                            onChange={(e) => setPhone(e.target.value)}
+                            value={phone}
                           />
                         </InputGroup>
 
@@ -246,9 +309,10 @@ export const LoginPage = () => {
                           />
                           <Input
                             type="email"
-                            placeholder="john@example.com"
                             id="email"
                             name="email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            value={email}
                           />
                         </InputGroup>
                       </Stack>

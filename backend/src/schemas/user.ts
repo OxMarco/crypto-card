@@ -25,6 +25,9 @@ export class User {
 
   @Prop({ required: false })
   nonce?: string;
+
+  @Prop({ required: true })
+  signature: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
