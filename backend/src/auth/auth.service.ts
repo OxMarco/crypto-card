@@ -24,7 +24,6 @@ export class AuthService {
 
   //   throw new UnauthorizedException();
   // }
-
   async login(loginUserDto: LoginUserDto): Promise<any> {
     const user = await this.usersService.getById(loginUserDto.ethereumAddress);
     if (!user) {
