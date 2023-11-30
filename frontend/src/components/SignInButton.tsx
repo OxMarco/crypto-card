@@ -98,6 +98,7 @@ const SignInButton = ({
       variant="outline"
       disabled={!state.nonce || state.loading}
       onClick={signIn}
+      bg={{ base: 'white', sm: 'blue' }}
     >
       {processing ? (
         <Spinner />
