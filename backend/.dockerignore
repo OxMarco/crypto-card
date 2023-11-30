@@ -1,0 +1,11 @@
+Dockerfile
+.dockerignore
+.env
+.DS_Store
+docker-compose.yml
+docker-compose-local.yml
+dist
+data
+node_modules
+user_conf.d
+pipe_db

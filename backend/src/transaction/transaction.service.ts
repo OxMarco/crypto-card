@@ -1,60 +1,44 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { TransactionEntity } from 'src/entities/transaction';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { Transaction } from 'src/schemas/transaction';
 import { StripeService } from 'src/stripe/stripe.service';
 
 @Injectable()
 export class TransactionService {
-  constructor(private stripeService: StripeService) {}
+  constructor(
+    @InjectModel(Transaction.name) private transactionModel: Model<Transaction>,
+    private stripeService: StripeService,
+  ) {}
 
-  _parseTransaction(transaction: any): TransactionEntity {
+  async getAll(): Promise<Transaction[]> {
+    return await this.transactionModel.find().exec();
+  }
+
+  async getById(id: string): Promise<Transaction> {
+    const transaction = await this.transactionModel.findById(id).exec();
     if (!transaction)
-      throw new NotFoundException({
-        error: `Transaction not found`,
-      });
-    console.log(transaction)
+      throw new NotFoundException({ error: 'Transaction not found' });
 
-    const transactionEntity = new TransactionEntity();
-    transactionEntity.id = transaction.id;
-    transactionEntity.amount = transaction.amount;
-    transactionEntity.cardId = transaction.card;
-    transactionEntity.cardholderId = transaction.cardholder;
-    transactionEntity.currency = transaction.currency;
-    transactionEntity.merchantAmount = transaction.merchant_amount;
-    transactionEntity.merchantCurrency = transaction.merchant_currency;
-    transactionEntity.merchant = transaction.merchant_data;
-    transactionEntity.type = transaction.type;
-    transactionEntity.createdAt = transaction.created;
-    return transactionEntity;
+    return transaction;
   }
 
-  async getAll(): Promise<TransactionEntity[]> {
-    const transaction = await this.stripeService.getAllTransactions();
-    return transaction.data.map((transaction) => {
-      return this._parseTransaction(transaction);
-    });
-  }
-
-  async getById(id: string): Promise<TransactionEntity> {
-    const transaction = await this.stripeService.searchTransaction(id);
-    return this._parseTransaction(transaction);
-  }
-
-  async handleWebhook(requestBody: Buffer | string | undefined, signature: string): Promise<Boolean> {
+  async handleWebhook(
+    requestBody: Buffer | string | undefined,
+    signature: string,
+  ): Promise<boolean> {
     let event: any;
 
     try {
-      event = await this.stripeService.constructEvent(
-        requestBody,
-        signature,
-      );
+      event = await this.stripeService.constructEvent(requestBody, signature);
     } catch (err) {
       throw new Error(`Webhook Error: ${err.message}`);
     }
 
-    console.log(event.type)
+    console.log(event.type);
 
     if (event.type === 'issuing_authorization.request') {
-      const auth = event.data.object;
+      //const auth = event.data.object;
       // ... custom business logic
       return true;
     }

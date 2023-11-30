@@ -5,17 +5,21 @@ import {
   Param,
   Post,
   Put,
-  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { CreateUserDto } from 'src/dtos/create-user';
 import { UserEntity } from 'src/entities/user';
 import { UpdateUserDto } from 'src/dtos/update-user';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { MongooseClassSerializerInterceptor } from 'src/interceptors/mongoose';
+import { PaginationInterceptor } from 'src/interceptors/pagination';
+import { Public } from 'src/decorators/public';
 
 @Controller('user')
 @ApiTags('user')
+@MongooseClassSerializerInterceptor(UserEntity)
+@UseInterceptors(PaginationInterceptor)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -25,7 +29,7 @@ export class UserController {
     type: [UserEntity],
   })
   @Get()
-  async getAllUsers(): Promise<UserEntity[]> {
+  async getAllUsers() {
     return await this.userService.getAll();
   }
 
@@ -35,7 +39,7 @@ export class UserController {
     type: UserEntity,
   })
   @Get('/get/:id')
-  async getById(@Param('id') id: string): Promise<UserEntity> {
+  async getById(@Param('id') id: string) {
     return await this.userService.getById(id);
   }
 
@@ -44,8 +48,9 @@ export class UserController {
     status: 200,
     type: UserEntity,
   })
+  @Public()
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
+  async createUser(@Body() createUserDto: CreateUserDto) {
     return await this.userService.create(createUserDto);
   }
 
@@ -55,7 +60,7 @@ export class UserController {
     type: UserEntity,
   })
   @Put()
-  async updateUser(@Body() updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async updateUser(@Body() updateUserDto: UpdateUserDto) {
     return await this.userService.update(updateUserDto);
   }
 }

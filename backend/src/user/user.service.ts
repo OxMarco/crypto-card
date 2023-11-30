@@ -1,47 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { CreateUserDto } from 'src/dtos/create-user';
 import { UpdateUserDto } from 'src/dtos/update-user';
 import { StripeService } from 'src/stripe/stripe.service';
-import { UserEntity } from 'src/entities/user';
+import { User } from 'src/schemas/user';
 
 @Injectable()
 export class UserService {
-  constructor(private stripeService: StripeService) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private stripeService: StripeService,
+  ) {}
 
-  _parseUser(cardholder: any): UserEntity {
-    if (!cardholder)
-      throw new NotFoundException({
-        error: `User not found`,
-      });
-
-    const userEntity = new UserEntity();
-    userEntity.id = cardholder.id;
-    userEntity.username = cardholder.metadata.username;
-    userEntity.avatar = cardholder.metadata.username;
-    userEntity.firstName = cardholder.individual?.first_name || undefined;
-    userEntity.lastName = cardholder.individual?.last_name || undefined;
-    userEntity.phone = cardholder.phone_number || undefined;
-    userEntity.email = cardholder.email || undefined;
-    userEntity.status = cardholder.status;
-    userEntity.createdAt = cardholder.created;
-    return userEntity;
+  async getAll(): Promise<User[]> {
+    return await this.userModel.find().exec();
   }
 
-  async getAll(): Promise<UserEntity[]> {
-    const cardholders = await this.stripeService.getAllCardholders();
-    return cardholders.data.map((cardholder) => {
-      return this._parseUser(cardholder);
-    });
+  async getById(id: string): Promise<User> {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) throw new NotFoundException({ error: 'User not found' });
+
+    return user;
   }
 
-  async getById(id: string): Promise<UserEntity> {
-    const cardholder = await this.stripeService.searchCardholder(id);
-    return this._parseUser(cardholder);
-  }
-
-  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
-    const pass = await bcrypt.hash(createUserDto.password, 10);
+  async create(createUserDto: CreateUserDto): Promise<User> {
     const cardholder = await this.stripeService.createCardholder({
       name: createUserDto.firstName + ' ' + createUserDto.lastName,
       email: createUserDto.email,
@@ -65,21 +48,30 @@ export class UserService {
           country: createUserDto.countryCode,
         },
       },
-      metadata: {
-        username: createUserDto.username,
-        password: pass,
-        avatar: createUserDto?.avatar || '',
-      },
     });
 
-    return this._parseUser(cardholder);
+    const newCardholder = new this.userModel({
+      cardholderId: cardholder.id,
+      firstName: createUserDto.firstName,
+      lastName: createUserDto.lastName,
+      email: createUserDto.email,
+      phone: createUserDto.phone,
+      wallet: createUserDto.wallet,
+    });
+    return await newCardholder.save();
   }
 
-  async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
+  async update(updateUserDto: UpdateUserDto): Promise<User> {
     const cardholder = await this.stripeService.updateCardholder(
       updateUserDto.id,
       updateUserDto,
     );
-    return this._parseUser(cardholder);
+
+    const updatedUser = await this.userModel
+      .findByIdAndUpdate(updateUserDto.id, { ...cardholder }, { new: true })
+      .exec();
+    if (!updatedUser) throw new NotFoundException({ error: 'User not found' });
+
+    return updatedUser;
   }
 }

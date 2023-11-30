@@ -1,10 +1,21 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { DisputeEntity } from 'src/entities/dispute';
 import { DisputeService } from './dispute.service';
+import { MongooseClassSerializerInterceptor } from 'src/interceptors/mongoose';
+import { PaginationInterceptor } from 'src/interceptors/pagination';
 
 @Controller('dispute')
 @ApiTags('dispute')
+@MongooseClassSerializerInterceptor(DisputeEntity)
+@UseInterceptors(PaginationInterceptor)
 export class DisputeController {
   constructor(private readonly disputeService: DisputeService) {}
 
@@ -14,7 +25,7 @@ export class DisputeController {
     type: [DisputeEntity],
   })
   @Get()
-  async getAll(): Promise<DisputeEntity[]> {
+  async getAll() {
     return await this.disputeService.getAll();
   }
 
@@ -24,7 +35,7 @@ export class DisputeController {
     type: DisputeEntity,
   })
   @Get('/get/:id')
-  async getById(@Param('id') id: string): Promise<DisputeEntity> {
+  async getById(@Param('id') id: string) {
     return await this.disputeService.getById(id);
   }
 
@@ -34,7 +45,7 @@ export class DisputeController {
     type: DisputeEntity,
   })
   @Post()
-  async createDispute(@Body() createDisputeDto: any): Promise<DisputeEntity> {
+  async createDispute(@Body() createDisputeDto: any) {
     return await this.disputeService.create(createDisputeDto);
   }
 }

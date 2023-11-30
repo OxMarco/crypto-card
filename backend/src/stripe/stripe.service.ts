@@ -68,10 +68,9 @@ export class StripeService {
   }
 
   async processAuthorisation(id: string, approve: boolean, params: any) {
-    if(approve)
+    if (approve)
       return await this.stripe.issuing.authorizations.approve(id, params);
-    else
-      return await this.stripe.issuing.authorizations.decline(id, params);
+    else return await this.stripe.issuing.authorizations.decline(id, params);
   }
 
   ////////// DISPUTES //////////
@@ -92,7 +91,10 @@ export class StripeService {
   }
 
   ////////// WEBHOOKS //////////
-  async constructEvent(requestBody: any, signature: any): Promise<Stripe.Event> {
+  async constructEvent(
+    requestBody: any,
+    signature: any,
+  ): Promise<Stripe.Event> {
     return this.stripe.webhooks.constructEvent(
       requestBody,
       signature,

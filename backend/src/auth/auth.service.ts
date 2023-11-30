@@ -1,27 +1,66 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcrypt';
+import { InjectModel } from '@nestjs/mongoose';
 import { Request } from 'express';
+import { Model } from 'mongoose';
+import { generateNonce, SiweErrorType, SiweMessage } from 'siwe';
+import { LoginUserDto } from 'src/dtos/login-user';
+import { User } from 'src/schemas/user';
 import { StripeService } from 'src/stripe/stripe.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private stripeService: StripeService, private jwtService: JwtService) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private stripeService: StripeService,
+    private jwtService: JwtService,
+  ) {}
 
-  async login(username: string, password: string): Promise<any> {
-    const cardholders = await this.stripeService.getAllCardholders();
-    for (const cardholder of cardholders.data) {
-      if (cardholder.metadata?.username === username) {
-        if (await bcrypt.compare(password, cardholder.metadata.password)) {
-          const payload = { cardholderId: cardholder.id, username: cardholder.metadata.username };
-          return {
-            access_token: await this.jwtService.signAsync(payload),
-          };
-        }
+  async generateNonce(wallet: string): Promise<any> {
+    const user = await this.userModel.findOne({ wallet }).exec();
+    if (!user) throw new UnauthorizedException();
+
+    user.nonce = generateNonce();
+    await user.save();
+
+    return user.nonce;
+  }
+
+  async login(loginDto: LoginUserDto): Promise<any> {
+    const user = await this.userModel
+      .findOne({ wallet: loginDto.wallet })
+      .exec();
+    if (!user) throw new UnauthorizedException({ error: 'User not found' });
+    const cardholder = await this.stripeService.searchCardholder(
+      user.cardholderId,
+    );
+    if (cardholder.status !== 'active')
+      throw new UnauthorizedException({ error: 'Inactive user' });
+
+      try {
+      const SIWEObject = new SiweMessage(JSON.parse(loginDto.message));
+      const { data: msg } = await SIWEObject.verify({
+        signature: loginDto.signature,
+        nonce: user.nonce,
+      });
+
+      return {
+        id: user.id, 
+        cardholderId: user.cardholderId,
+        accessToken: await this.jwtService.signAsync({ id: user.id, cardholderId: user.cardholderId }),
+      };
+    } catch (e) {
+      if (e == SiweErrorType.EXPIRED_MESSAGE) {
+        console.log('Expired message');
+        throw new UnauthorizedException({ error: 'Expired message' });
+      } else if (e == SiweErrorType.INVALID_SIGNATURE) {
+        console.log('Invalid signature');
+        throw new UnauthorizedException({ error: 'Invalid signature' });
+      } else {
+        console.log('Unknown error ' + e.message);
+        throw new UnauthorizedException({ e });
       }
     }
-
-    throw new UnauthorizedException();
   }
 
   extractTokenFromHeader(request: Request): string | undefined {

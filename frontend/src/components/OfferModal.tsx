@@ -11,32 +11,28 @@ import {
   Stack,
   Text,
   useColorModeValue,
-} from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+} from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
 export const OfferModal = () => {
-  const [ open, setOpen ] = useState<boolean>(false)
+  const [open, setOpen] = useState<boolean>(false);
   const close = () => {
-    setOpen(false)
-    localStorage.setItem('offerModalClosed', 'true')
-  }
+    setOpen(false);
+    localStorage.setItem('offerModalClosed', 'true');
+  };
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (localStorage.getItem('offerModalClosed') !== 'true') {
-        setOpen(true)
+        setOpen(true);
       }
-    }, 15000)
+    }, 15000);
 
-    return () => clearTimeout(timer)
-  }, [])
- 
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-  <Modal
-      isOpen={open}
-      onClose={() => setOpen(false)}
-      size="2xl"
-    >
+    <Modal isOpen={open} onClose={() => setOpen(false)} size="2xl">
       <ModalOverlay />
       <ModalContent borderRadius="2xl" mx="4">
         <ModalBody>
@@ -65,47 +61,48 @@ export const OfferModal = () => {
               </Text>
             </Stack>
             <Stack
-    as="form"
-    spacing="3"
-    onSubmit={(e) => {
-      e.preventDefault()
-      // manage form submission
-    }}
-  >
-    <FormControl id="email">
-      <FormLabel srOnly>Enter your email</FormLabel>
-      <Input
-        type="email"
-        placeholder="Enter your email"
-        size="lg"
-        autoComplete='email'
-        fontSize="md"
-        focusBorderColor={useColorModeValue('blue.500', 'blue.200')}
-      />
-    </FormControl>
-    <Button
-      type="submit"
-      fontWeight="bold"
-      textTransform="uppercase"
-      fontSize="md"
-      colorScheme="blue"
-      size="lg"
-    >
-      Get my 10% discount
-    </Button>
-  </Stack>
+              as="form"
+              spacing="3"
+              onSubmit={(e) => {
+                e.preventDefault();
+                // manage form submission
+              }}
+            >
+              <FormControl id="email">
+                <FormLabel srOnly>Enter your email</FormLabel>
+                <Input
+                  type="email"
+                  placeholder="Enter your email"
+                  size="lg"
+                  autoComplete="email"
+                  fontSize="md"
+                  focusBorderColor={useColorModeValue('blue.500', 'blue.200')}
+                />
+              </FormControl>
+              <Button
+                type="submit"
+                fontWeight="bold"
+                textTransform="uppercase"
+                fontSize="md"
+                colorScheme="blue"
+                size="lg"
+              >
+                Get my 10% discount
+              </Button>
+            </Stack>
             <Button
-            variant={"link"}
+              variant={'link'}
               fontSize="sm"
               textAlign="center"
               color={useColorModeValue('gray.600', 'gray.400')}
               textDecoration="underline"
               onClick={() => close()}
             >
-              No, I don't want any discounts
+              No, I don&apos;t want any discounts
             </Button>
           </Stack>
         </ModalBody>
       </ModalContent>
     </Modal>
-)}
+  );
+};

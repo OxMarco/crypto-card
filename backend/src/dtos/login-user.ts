@@ -1,11 +1,15 @@
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import { IsEthereumAddress, IsJSON, IsNotEmpty, IsString } from 'class-validator';
 
 export class LoginUserDto {
-  @IsString()
+  @IsEthereumAddress()
   @IsNotEmpty()
-  username: string;
+  wallet: string;
+
+  @IsJSON()
+  @IsNotEmpty()
+  message: string;
 
   @IsString()
   @IsNotEmpty()
-  password: string;
+  signature: string;
 }

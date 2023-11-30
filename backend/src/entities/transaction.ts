@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
 export class TransactionEntity {
@@ -8,7 +8,7 @@ export class TransactionEntity {
 
   @ApiProperty()
   @Expose()
-  amount: number;
+  cardholderId: string;
 
   @ApiProperty()
   @Expose()
@@ -16,29 +16,13 @@ export class TransactionEntity {
 
   @ApiProperty()
   @Expose()
-  cardholderId: string;
+  transactionId: string;
 
   @ApiProperty()
   @Expose()
-  currency: string;
+  createdAt: string;
 
   @ApiProperty()
   @Expose()
-  merchantAmount: number;
-
-  @ApiProperty()
-  @Expose()
-  merchantCurrency: string;
-
-  @ApiProperty()
-  @Expose()
-  merchant: any;
-
-  @ApiProperty()
-  @Expose()
-  type: string;
-
-  @ApiProperty()
-  @Expose()
-  createdAt: number;
+  updatedAt: string;
 }

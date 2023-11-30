@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: "mongo:latest"
+    container_name: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: mongopassword
+      MONGO_INITDB_DATABASE: nestjsdb
+    volumes:
+      - mongodb_data_container:/data/db
+    ports:
+      - 27017:27017
+
+  nestjs:
+    build: .
+    container_name: nestjs-backend
+    stop_signal: SIGTERM
+    stop_grace_period: 200s
+    environment:
+      DATABASE_URL: "mongodb://mongoadmin:mongopassword@mongo:27017/nestjsdb?authSource=admin"
+      DATABASE_USER: "mongoadmin"
+      DATABASE_PASSWORD: "mongopassword"
+      STRIPE_SECRET_KEY: "${STRIPE_SECRET_KEY}"
+      STRIPE_WEBHOOK_SECRET: "${STRIPE_WEBHOOK_SECRET}"
+      JWT_SECRET: "${JWT_SECRET}"
+    ports:
+      - 3000:3000
+    depends_on:
+      mongo:
+        condition: service_started
+    volumes:
+      - nestjs_data_container:/usr/src/app
+    
+volumes:
+  nestjs_data_container:
+  mongodb_data_container:
