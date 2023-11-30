@@ -98,6 +98,7 @@ const SignInButton = ({
       variant="outline"
       disabled={!state.nonce || state.loading}
       onClick={signIn}
+      bg={{ base: 'white', sm: 'blue' }}
     >
       {processing ? <Spinner /> : <Icon as={FiLock} mr={2} />}
       Sign-In with Ethereum

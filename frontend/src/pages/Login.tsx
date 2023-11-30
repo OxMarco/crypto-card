@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Container,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -132,8 +133,9 @@ export const LoginPage = () => {
     <>
       <Menu />
       <Box
-        bgGradient={{ base: 'linear(to-r, blue.600, blue.400)' }}
+        bgGradient={{ base: 'white', sm: 'linear(to-r, blue.600, blue.400)' }}
         py={{ base: '12', md: '24' }}
+        minH={'100vh'}
       >
         <Container
           maxW="md"
@@ -149,7 +151,11 @@ export const LoginPage = () => {
               <Tab>Register</Tab>
             </TabList>
             <TabPanels>
-              <TabPanel>
+              <TabPanel  h={{
+                base: '80vh',
+                sm: '30vh'
+                }} display={'flex'} alignItems={'center'} justifyContent={'center'}>
+                {/* <Flex > */}
                 <Stack spacing="8">
                   <Stack spacing="6" align="center">
                     <Stack spacing="3" textAlign="center">
@@ -159,7 +165,7 @@ export const LoginPage = () => {
                       </Text>
                     </Stack>
                   </Stack>
-                  <Stack spacing="6">
+                  <Stack spacing="6" alignItems={'center'} >
                     {isConnected ? (
                       <SignInButton
                         onSuccess={loginSuccessful}
@@ -185,6 +191,7 @@ export const LoginPage = () => {
                     understood, and agree to our terms and condition
                   </Text>
                 </Stack>
+                {/* </Flex> */}
               </TabPanel>
               <TabPanel>
                 <Stack spacing="8">
