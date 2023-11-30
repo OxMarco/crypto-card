@@ -1,22 +1,20 @@
-import {
-  Box, Flex, FlexProps, HStack, Img, useMenuButton,
-} from '@chakra-ui/react'
-import { FiLock } from 'react-icons/fi'
-import { useAccount, useNetwork } from 'wagmi'
+import { Box, Flex, HStack } from '@chakra-ui/react';
+import { FiLock } from 'react-icons/fi';
+import { useAccount, useNetwork } from 'wagmi';
 
 export const AccountSwitcher = () => {
-  const { address } = useAccount()
-  const { chain } = useNetwork()
+  const { address } = useAccount();
+  const { chain } = useNetwork();
 
   const truncateEthereumAddress = (address: string | undefined) => {
     if (!address || address.length < 12) {
-      return "0x00000"
+      return '0x00000';
     }
-  
+
     const start = address.substring(0, 7); // '0x' + first 5 characters
     const end = address.substring(address.length - 5); // last 5 characters
     return `${start}...${end}`;
-  }
+  };
 
   return (
     <Flex
@@ -48,5 +46,5 @@ export const AccountSwitcher = () => {
         <FiLock />
       </Box>
     </Flex>
-  )
-}
+  );
+};

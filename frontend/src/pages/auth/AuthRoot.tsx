@@ -1,25 +1,45 @@
-import { Box, Button, Circle, Container, Flex, HStack, Heading, IconButton, SimpleGrid, Spacer, Stack, Stat, StatHelpText, StatLabel, StatNumber, useColorModeValue as mode } from '@chakra-ui/react'
+import {
+  Box,
+  Container,
+  Flex,
+  HStack,
+  Heading,
+  IconButton,
+  Spacer,
+  Stack,
+  useColorModeValue as mode,
+} from '@chakra-ui/react';
 import {
   BiCog,
   BiCreditCard,
   BiHome,
-  BiListOl,
   BiLogOut,
   BiWallet,
-} from 'react-icons/bi'
-import { useLocation } from 'react-router-dom'
-import { NavItem } from '../../components/NavItem'
-import { AccountSwitcher } from '../../components/AccountSwitcher'
-import { ReactNode } from 'react'
-import { FiArrowLeft } from 'react-icons/fi'
+} from 'react-icons/bi';
+import { useLocation } from 'react-router-dom';
+import { NavItem } from '../../components/NavItem';
+import { AccountSwitcher } from '../../components/AccountSwitcher';
+import { ReactNode } from 'react';
+import { FiArrowLeft } from 'react-icons/fi';
 
-const AuthRootPage = ({ title, button, back, children }: { title: string, button?: any, back?: boolean, children: ReactNode }) => {
-  const location = useLocation()
+const AuthRootPage = ({
+  title,
+  button,
+  back,
+  children,
+}: {
+  title: string;
+  button?: any;
+  back?: boolean;
+  children: ReactNode;
+}) => {
+  const location = useLocation();
+
   const navItems = [
     { icon: BiHome, label: 'Dashboard', href: '/dashboard' },
-    { icon: BiWallet, label: 'Wallet', href: '/wallet' },
+    { icon: BiWallet, label: 'Vaults', href: '/vaults' },
     { icon: BiCreditCard, label: 'Cards', href: '/cards' },
-  ]
+  ];
 
   return (
     <Box height="100vh" overflow="hidden" position="relative">
@@ -29,15 +49,15 @@ const AuthRootPage = ({ title, button, back, children }: { title: string, button
             <AccountSwitcher />
             <Stack spacing="8" flex="1" overflow="auto" pt="8">
               <Stack spacing="1">
-              {navItems.map((item: any, index: number) => (
-                <NavItem
-                  key={index}
-                  active={location.pathname === item.href}
-                  icon={<item.icon />}
-                  label={item.label}
-                  href={item.href}
-                />
-              ))}
+                {navItems.map((item: any, index: number) => (
+                  <NavItem
+                    key={index}
+                    active={location.pathname === item.href}
+                    icon={<item.icon />}
+                    label={item.label}
+                    href={item.href}
+                  />
+                ))}
               </Stack>
             </Stack>
             <Box>
@@ -47,7 +67,7 @@ const AuthRootPage = ({ title, button, back, children }: { title: string, button
                   subtle
                   icon={<BiLogOut />}
                   label="Logout"
-                  href="/login"
+                  href="/logout"
                 />
               </Stack>
             </Box>
@@ -62,16 +82,33 @@ const AuthRootPage = ({ title, button, back, children }: { title: string, button
             borderColor={mode('gray.200', 'gray.700')}
           >
             <Flex flex="1" direction="column" overflowY="auto">
-              <Box flex="1" px="6" py="4" alignContent="center" justifyContent="center">
+              <Box
+                flex="1"
+                px="6"
+                py="4"
+                alignContent="center"
+                justifyContent="center"
+              >
                 <Box as="header" bg={mode('white', 'gray.700')} px="6" py="4">
                   <HStack>
-                    {back && <IconButton aria-label="Back" variant={"outline"} icon={<FiArrowLeft />} onClick={() => window.history.back()} />}
+                    {back && (
+                      <IconButton
+                        aria-label="Back"
+                        variant={'outline'}
+                        icon={<FiArrowLeft />}
+                        onClick={() => window.history.back()}
+                      />
+                    )}
                     <Heading size="lg">{title}</Heading>
                     <Spacer />
                     {button}
                   </HStack>
                 </Box>
-                <Container maxW="container.xl">
+                <Container
+                  maxW="container.xl"
+                  maxHeight="350px"
+                  overflowY="auto"
+                >
                   {children}
                 </Container>
               </Box>
@@ -80,7 +117,7 @@ const AuthRootPage = ({ title, button, back, children }: { title: string, button
         </Box>
       </Flex>
     </Box>
-  )
-}
+  );
+};
 
-export default AuthRootPage
+export default AuthRootPage;

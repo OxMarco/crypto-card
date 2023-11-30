@@ -1,9 +1,22 @@
-import { IsEmail, IsMobilePhone, IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import {
+  IsAlpha,
+  IsEmail,
+  IsEthereumAddress,
+  IsMobilePhone,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 
 export class UpdateUserDto {
-  @IsUrl()
+  @IsString()
+  @IsNotEmpty()
+  id: string;
+
+  @IsEthereumAddress()
   @IsOptional()
-  avatar?: string;
+  wallet?: string;
 
   @IsEmail()
   @IsOptional()
@@ -12,4 +25,23 @@ export class UpdateUserDto {
   @IsMobilePhone()
   @IsOptional()
   phone?: string;
+
+  @IsString()
+  @IsOptional()
+  address?: string;
+
+  @IsString()
+  @IsOptional()
+  city?: string;
+
+  @IsAlpha()
+  @Matches(/^[A-Z]{2}$/, {
+    message: 'The countryCode must be a two-letter string',
+  })
+  @IsOptional()
+  countryCode?: string;
+
+  @IsString()
+  @IsOptional()
+  poBox?: string;
 }

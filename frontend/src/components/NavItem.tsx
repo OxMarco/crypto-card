@@ -1,19 +1,20 @@
-import { Box, HStack } from '@chakra-ui/react'
-import { ReactElement, ReactNode } from 'react'
-import { BsCaretRightFill } from 'react-icons/bs'
+import { Box, HStack } from '@chakra-ui/react';
+import { ReactElement, ReactNode } from 'react';
+import { BsCaretRightFill } from 'react-icons/bs';
 
 interface NavItemProps {
-  href?: string
-  label: string
-  subtle?: boolean
-  active?: boolean
-  icon: ReactElement
-  endElement?: ReactElement
-  children?: ReactNode
+  href?: string;
+  label: string;
+  subtle?: boolean;
+  active?: boolean;
+  icon: ReactElement;
+  endElement?: ReactElement;
+  children?: ReactNode;
+  onClick?: () => any;
 }
 
 export const NavItem = (props: NavItemProps) => {
-  const { active, subtle, icon, children, label, endElement, href } = props
+  const { active, subtle, icon, children, label, endElement, href } = props;
   return (
     <HStack
       as="a"
@@ -32,11 +33,15 @@ export const NavItem = (props: NavItemProps) => {
       <Box fontSize="lg" color={active ? 'currentcolor' : 'gray.400'}>
         {icon}
       </Box>
-      <Box flex="1" fontWeight="inherit" color={subtle ? 'gray.400' : undefined}>
+      <Box
+        flex="1"
+        fontWeight="inherit"
+        color={subtle ? 'gray.400' : undefined}
+      >
         {label}
       </Box>
       {endElement && !children && <Box>{endElement}</Box>}
       {children && <Box fontSize="xs" flexShrink={0} as={BsCaretRightFill} />}
     </HStack>
-  )
-}
+  );
+};

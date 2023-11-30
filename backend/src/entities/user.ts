@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 
 export class UserEntity {
@@ -8,33 +8,33 @@ export class UserEntity {
 
   @ApiProperty()
   @Expose()
-  username: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  avatar?: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  firstName?: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  lastName?: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  phone?: string;
-
-  @ApiPropertyOptional()
-  @Expose()
-  email?: string;
+  cardholderId: string;
 
   @ApiProperty()
   @Expose()
-  status: string;
+  firstName: string;
 
   @ApiProperty()
   @Expose()
-  createdAt: number;
+  lastName: string;
+
+  @ApiProperty()
+  @Expose()
+  email: string;
+
+  @ApiProperty()
+  @Expose()
+  phone: string;
+
+  @ApiProperty()
+  @Expose()
+  wallet: string;
+
+  @ApiProperty()
+  @Expose()
+  createdAt: string;
+
+  @ApiProperty()
+  @Expose()
+  updatedAt: string;
 }

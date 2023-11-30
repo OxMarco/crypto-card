@@ -1,14 +1,23 @@
 import React from 'react';
-import { Badge, Box, HStack, Spacer, Text, useColorModeValue } from '@chakra-ui/react';
+import { Badge, Box, HStack, Text, useColorModeValue } from '@chakra-ui/react';
 
 type VisaCardProps = {
+  cardBrand: string;
+  cardType: string;
   cardHolderName: string;
   cardNumber: string;
   expiryMonth: string;
   expiryYear: string;
 };
 
-const PaymentCard: React.FC<VisaCardProps> = ({ cardHolderName, cardNumber, expiryMonth, expiryYear }) => {
+const PaymentCard: React.FC<VisaCardProps> = ({
+  cardBrand,
+  cardType,
+  cardHolderName,
+  cardNumber,
+  expiryMonth,
+  expiryYear,
+}) => {
   const cardBg = useColorModeValue('blue.500', 'blue.300');
 
   return (
@@ -21,11 +30,11 @@ const PaymentCard: React.FC<VisaCardProps> = ({ cardHolderName, cardNumber, expi
       color="white"
       position="relative"
     >
-      <HStack justify={"space-between"}>
+      <HStack justify={'space-between'}>
         <Text fontSize="xl" fontWeight="bold" mb="2">
-          VISA
+          {cardBrand}
         </Text>
-        <Badge>Virtual</Badge>
+        <Badge>{cardType}</Badge>
       </HStack>
       <Box fontSize="sm">
         <Text>Number</Text>

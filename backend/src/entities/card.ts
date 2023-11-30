@@ -12,6 +12,14 @@ export class CardEntity {
 
   @ApiProperty()
   @Expose()
+  cardId: string;
+
+  @ApiProperty()
+  @Expose()
+  type: string;
+
+  @ApiProperty()
+  @Expose()
   currency: string;
 
   @ApiProperty()
@@ -32,13 +40,13 @@ export class CardEntity {
 
   @ApiProperty()
   @Expose()
-  type: string;
-
-  @ApiProperty()
-  @Expose()
   status: string;
 
   @ApiProperty()
   @Expose()
-  createdAt: number;
+  createdAt: string;
+
+  @ApiProperty()
+  @Expose()
+  updatedAt: string;
 }

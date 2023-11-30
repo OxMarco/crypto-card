@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ScheduleModule } from '@nestjs/schedule';
 import { HttpModule } from '@nestjs/axios';
@@ -11,6 +11,7 @@ import { CardModule } from './card/card.module';
 import { AuthModule } from './auth/auth.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { DisputeModule } from './dispute/dispute.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
@@ -25,6 +26,13 @@ import { DisputeModule } from './dispute/dispute.module';
     HttpModule.register({
       timeout: 5000,
       maxRedirects: 5,
+    }),
+    MongooseModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        uri: configService.get<string>('DATABASE_URL'),
+      }),
+      inject: [ConfigService],
     }),
     UserModule,
     StripeModule,

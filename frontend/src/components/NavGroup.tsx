@@ -1,13 +1,13 @@
-import { Box, Stack, Text } from '@chakra-ui/react'
-import { ReactNode } from 'react'
+import { Box, Stack, Text } from '@chakra-ui/react';
+import { ReactNode } from 'react';
 
 interface NavGroupProps {
-  label: string
-  children: ReactNode
+  label: string;
+  children: ReactNode;
 }
 
 export const NavGroup = (props: NavGroupProps) => {
-  const { label, children } = props
+  const { label, children } = props;
   return (
     <Box>
       <Text
@@ -23,5 +23,5 @@ export const NavGroup = (props: NavGroupProps) => {
       </Text>
       <Stack spacing="1">{children}</Stack>
     </Box>
-  )
-}
+  );
+};

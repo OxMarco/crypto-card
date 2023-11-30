@@ -1,17 +1,14 @@
 import { Transform } from 'class-transformer';
 import {
   IsString,
-  IsOptional,
-  IsUrl,
   IsNotEmpty,
   IsDate,
   IsAlpha,
   IsMobilePhone,
   IsEmail,
   Matches,
-  IsAlphanumeric,
   MaxDate,
-  IsStrongPassword,
+  IsEthereumAddress,
 } from 'class-validator';
 
 const eighteenYearsAgo = new Date();
@@ -26,23 +23,14 @@ export class CreateUserDto {
   @IsNotEmpty()
   lastName: string;
 
-  @IsAlphanumeric()
+  @IsEthereumAddress()
   @IsNotEmpty()
-  username: string;
-
-  @IsStrongPassword()
-  @IsNotEmpty()
-  password: string;
-
-  @IsUrl()
-  @IsOptional()
-  avatar?: string;
+  wallet: string;
 
   @Transform(({ value }) => new Date(value))
   @IsDate()
   @MaxDate(eighteenYearsAgo, {
-    message:
-      'dob must be a Date instance representing a date at least 18 years ago',
+    message: 'user must be above 18 years old',
   })
   @IsDate()
   dob: Date;
