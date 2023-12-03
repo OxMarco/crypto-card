@@ -42,8 +42,6 @@ export class AuthGuard implements CanActivate {
         secret: this.jwtSecret,
       });
 
-      // @todo verify if expired
-
       request['id'] = payload.id;
       request['cardholderId'] = payload.cardholderId;
     } catch {

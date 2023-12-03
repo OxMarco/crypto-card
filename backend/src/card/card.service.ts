@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateCardDto } from 'src/dtos/create-card';
-import { UpdateCardDto } from 'src/dtos/update-card';
+import { UpdateCardStatusDto } from 'src/dtos/update-card-status';
 import { Card } from 'src/schemas/card';
 import { StripeService } from 'src/stripe/stripe.service';
 
@@ -76,20 +76,51 @@ export class CardService {
     return await newCard.save();
   }
 
-  async updateCard(
+  async updateCardStatus(
     cardholderId: string,
-    updateCardDto: UpdateCardDto,
+    updateCardStatusDto: UpdateCardStatusDto,
   ): Promise<Card> {
     const updatedCard = await this.cardModel
       .findOneAndUpdate(
-        { cardId: updateCardDto.cardId, cardholderId: cardholderId },
-        { status: updateCardDto.status },
+        { cardId: updateCardStatusDto.cardId, cardholderId: cardholderId },
+        { status: updateCardStatusDto.status },
         { new: true },
       )
       .exec();
     if (!updatedCard) throw new NotFoundException({ error: 'Card not found' });
-    await this.stripeService.updateCard(updateCardDto.cardId, {
-      status: updateCardDto.status,
+    await this.stripeService.updateCard(updateCardStatusDto.cardId, {
+      status: updateCardStatusDto.status,
+    });
+
+    return updatedCard;
+  }
+
+  async updateCardLimits(
+    cardholderId: string,
+    updateCardLimitsDto: any,
+  ): Promise<Card> {
+    const updatedCard = await this.cardModel
+      .findOneAndUpdate(
+        { cardId: updateCardLimitsDto.cardId, cardholderId: cardholderId },
+        { limits: updateCardLimitsDto },
+        { new: true },
+      )
+      .exec();
+    if (!updatedCard) throw new NotFoundException({ error: 'Card not found' });
+
+    await this.stripeService.updateCard(updateCardLimitsDto.cardId, {
+      spending_controls: {
+        spending_limits: [
+          {
+            amount: updateCardLimitsDto.monthlyLimit,
+            interval: 'monthly',
+          },
+          {
+            amount: updateCardLimitsDto.singleTxLimit,
+            interval: 'per_authorization',
+          },
+        ],
+      },
     });
 
     return updatedCard;

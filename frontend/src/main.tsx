@@ -5,6 +5,7 @@ import { Providers } from './Providers.tsx';
 import LandingPage from './pages/Landing.tsx';
 import ErrorPage from './pages/Error.tsx';
 import AboutPage from './pages/About.tsx';
+import FaqPage from './pages/Faq.tsx';
 import LoginPage from './pages/Login.tsx';
 import DashboardPage from './pages/auth/Dashboard.tsx';
 import CardsPage from './pages/auth/Cards.tsx';
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: '/about',
     element: <AboutPage />,
+  },
+  {
+    path: '/faq',
+    element: <FaqPage />,
   },
   {
     path: '/login',

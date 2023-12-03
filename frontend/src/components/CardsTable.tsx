@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
-  Badge,
   Box,
   Button,
   HStack,
   IconButton,
   Table,
   TableProps,
+  Tag,
   Tbody,
   Td,
   Text,
@@ -33,7 +33,7 @@ export const CardsTable = ({
   }, [accessToken]);
 
   const load = async () => {
-    const res = await fetch(`http://localhost:3000/card`, {
+    const res = await fetch(`http://localhost:3000/card/status`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export const CardsTable = ({
   };
 
   const pauseCard = async (cardId: string) => {
-    const res = await fetch(`http://localhost:3000/card`, {
+    const res = await fetch(`http://localhost:3000/card/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export const CardsTable = ({
   };
 
   const unpauseCard = async (cardId: string) => {
-    const res = await fetch(`http://localhost:3000/card`, {
+    const res = await fetch(`http://localhost:3000/card/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ export const CardsTable = ({
   };
 
   const blockCard = async (cardId: string) => {
-    const res = await fetch(`http://localhost:3000/card`, {
+    const res = await fetch(`http://localhost:3000/card/status`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -153,19 +153,19 @@ export const CardsTable = ({
                 </Td>
                 <Td>
                   {d.status === 'active' && (
-                    <Badge size="sm" colorScheme={'green'}>
+                    <Tag size="sm" colorScheme={'green'}>
                       Active
-                    </Badge>
+                    </Tag>
                   )}
                   {d.status === 'inactive' && (
-                    <Badge size="sm" colorScheme={'yellow'}>
+                    <Tag size="sm" colorScheme={'yellow'}>
                       Suspended
-                    </Badge>
+                    </Tag>
                   )}
                   {d.status === 'canceled' && (
-                    <Badge size="sm" colorScheme={'red'}>
+                    <Tag size="sm" colorScheme={'red'}>
                       Blocked
-                    </Badge>
+                    </Tag>
                   )}
                 </Td>
                 <Td>

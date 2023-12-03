@@ -38,8 +38,8 @@ export class TransactionService {
     console.log(event.type);
 
     if (event.type === 'issuing_authorization.request') {
-      //const auth = event.data.object;
-      // ... custom business logic
+      const auth = event.data.object;
+      // @todo check user balance on Accountant
       return true;
     }
 
