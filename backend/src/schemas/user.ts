@@ -28,6 +28,9 @@ export class User {
 
   @Prop({ required: true })
   signature: string;
+
+  @Prop({ required: false })
+  score?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
