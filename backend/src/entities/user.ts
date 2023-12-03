@@ -32,6 +32,10 @@ export class UserEntity {
 
   @ApiProperty()
   @Expose()
+  score: number;
+
+  @ApiProperty()
+  @Expose()
   createdAt: string;
 
   @ApiProperty()
