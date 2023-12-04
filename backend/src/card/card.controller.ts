@@ -15,7 +15,8 @@ import { CardEntity } from 'src/entities/card';
 import { CreateCardDto } from 'src/dtos/create-card';
 import { MongooseClassSerializerInterceptor } from 'src/interceptors/mongoose';
 import { PaginationInterceptor } from 'src/interceptors/pagination';
-import { UpdateCardDto } from 'src/dtos/update-card';
+import { UpdateCardStatusDto } from 'src/dtos/update-card-status';
+import { UpdateCardLimitsDto } from 'src/dtos/update-card-limits';
 
 @Controller('card')
 @UseInterceptors(PaginationInterceptor)
@@ -56,14 +57,37 @@ export class CardController {
     return await this.cardService.createCard(cardholderId, createCardDto);
   }
 
-  @ApiOperation({ summary: 'Create a new card for a certain user' })
+  @ApiOperation({ summary: 'Update card status' })
   @ApiResponse({
     status: 200,
     type: CardEntity,
   })
-  @Put()
-  async updateCard(@Body() updateCardDto: UpdateCardDto, @Req() req: Request) {
+  @Put('/status')
+  async updateCardStatus(
+    @Body() updateCardStatusDto: UpdateCardStatusDto,
+    @Req() req: Request,
+  ) {
     const cardholderId: string = (req as any).cardholderId;
-    return await this.cardService.updateCard(cardholderId, updateCardDto);
+    return await this.cardService.updateCardStatus(
+      cardholderId,
+      updateCardStatusDto,
+    );
+  }
+
+  @ApiOperation({ summary: 'Update card limits' })
+  @ApiResponse({
+    status: 200,
+    type: CardEntity,
+  })
+  @Put('/limits')
+  async updateCardLimits(
+    @Body() updateCardLimitsDto: UpdateCardLimitsDto,
+    @Req() req: Request,
+  ) {
+    const cardholderId: string = (req as any).cardholderId;
+    return await this.cardService.updateCardLimits(
+      cardholderId,
+      updateCardLimitsDto,
+    );
   }
 }

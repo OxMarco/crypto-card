@@ -11,17 +11,20 @@ import {
   SliderTrack,
   SliderFilledTrack,
   SliderThumb,
+  useToast,
 } from '@chakra-ui/react';
-import PaymentCard from '../../components/PaymentCard';
 import AuthRootPage from './AuthRoot';
+import PaymentCard from '../../components/PaymentCard';
 import { AppContext } from '../../context';
 import api from '../../utils/axios.interceptor';
+import { handleResponse } from '../../utils/response-helper';
 
 const CardSettingsPage = () => {
+  const toast = useToast();
   const cardId = '65672eec595c1dc89f5271b5';
   const { accessToken } = useContext(AppContext);
   const [card, setCard] = useState<any>();
-  const [dailyLimit, setDailyLimit] = useState<number>(1000);
+  const [singleTxLimit, setSingleTxLimit] = useState<number>(1000);
   const [monthlyLimit, setMonthlyLimit] = useState<number>(5000);
 
   useEffect(() => {
@@ -35,9 +38,28 @@ const CardSettingsPage = () => {
     if (accessToken) load();
   }, [accessToken]);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log({ dailyLimit, monthlyLimit });
+
+    const res = await fetch(`http://localhost:3000/card/limits`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify({
+        cardId,
+        monthlyLimit,
+        singleTxLimit,
+      }),
+    });
+
+    await handleResponse(
+      res,
+      toast,
+      'Card limits successfully updated',
+      'Failed to set new card limits',
+    );
   };
 
   return (
@@ -58,14 +80,14 @@ const CardSettingsPage = () => {
           </Box>
           <VStack spacing={4} align="stretch">
             <form onSubmit={handleSubmit}>
-              <FormControl id="daily-limit" mb={4}>
-                <FormLabel>Daily Transaction Limit: {dailyLimit}</FormLabel>
+              <FormControl id="single-tx-limit" mb={4}>
+                <FormLabel>Single Transaction Limit: {singleTxLimit}</FormLabel>
                 <Slider
-                  aria-label="daily-limit-slider"
-                  defaultValue={1000}
+                  aria-label="single-tx-limit-slider"
                   min={1}
                   max={5000}
-                  onChange={(val) => setDailyLimit(val)}
+                  onChange={(val) => setSingleTxLimit(val)}
+                  value={singleTxLimit}
                 >
                   <SliderTrack>
                     <SliderFilledTrack />
@@ -77,10 +99,10 @@ const CardSettingsPage = () => {
                 <FormLabel>Monthly Transaction Limit: {monthlyLimit}</FormLabel>
                 <Slider
                   aria-label="monthly-limit-slider"
-                  defaultValue={10000}
                   min={1}
                   max={50000}
                   onChange={(val) => setMonthlyLimit(val)}
+                  value={monthlyLimit}
                 >
                   <SliderTrack>
                     <SliderFilledTrack />

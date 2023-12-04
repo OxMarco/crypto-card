@@ -38,12 +38,26 @@ export class TransactionService {
     console.log(event.type);
 
     if (event.type === 'issuing_authorization.request') {
-      //const auth = event.data.object;
-      // ... custom business logic
+      const auth = event.data.object;
+      /** @todo check user balance on Accountant */
       return true;
     }
 
+    if (event.type === 'issuing_transactions.refund') {
+      /** 
+       * @todo implement it
+        Accountant contract -> holds[user] >= refund amount
+        -> if yes -> release hold
+        -> if not -> open refund request
+      */
+    }
+
+
     // ...handle other cases
+    /** @todo temporary capture -> hold */
+    /** @todo issuing_authorization.updated -> increase captured amount */
+    /** @todo issuing_authorization.reversal -> decrease captured amount */
+    /** @todo send Telegram message */
 
     return true;
   }

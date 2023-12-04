@@ -35,10 +35,4 @@ api.interceptors.response.use(
   }
 ) 
 
-// API Endpoints
-export const getCards = () => {
-  return api.get('/card')
-}
-
-
 export default api;

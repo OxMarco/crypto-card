@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
-  Badge,
   Box,
   Button,
   HStack,
   IconButton,
   Table,
   TableProps,
+  Tag,
   Tbody,
   Td,
   Text,
@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { FiPause, FiPlay, FiSlash } from 'react-icons/fi';
 import { handleResponse } from '../utils/response-helper';
-import api, { getCards } from '../utils/axios.interceptor';
+import api from '../utils/axios.interceptor';
 
 export const CardsTable = ({
   props,
@@ -34,14 +34,14 @@ export const CardsTable = ({
   }, [accessToken]);
 
   const load = async () => {
-    const res = await getCards();
+    const res = await api.get(`/card/status`);
     if (await handleResponse(res, toast, '', 'Failed to load cards')) {
       setCards(res.data);
     }
   };
 
   const pauseCard = async (cardId: string) => {
-    const res = await api.put(`/card`, JSON.stringify({ cardId, status: 'inactive' }));
+    const res = await api.put(`/card/status`, JSON.stringify({ cardId, status: 'inactive' }));
     if (
       await handleResponse(
         res,
@@ -55,7 +55,7 @@ export const CardsTable = ({
   };
 
   const unpauseCard = async (cardId: string) => {
-    const res = await api.put(`/card`, JSON.stringify({ cardId, status: 'active' }));
+    const res = await api.put(`/card/status`, JSON.stringify({ cardId, status: 'active' }));
 
     if (
       await handleResponse(
@@ -70,7 +70,7 @@ export const CardsTable = ({
   };
 
   const blockCard = async (cardId: string) => {
-    const res = await api.put(`/card`, JSON.stringify({ cardId, status: 'canceled' }));
+    const res = await api.put(`/card/status`, JSON.stringify({ cardId, status: 'canceled' }));
     if (
       await handleResponse(
         res,
@@ -126,19 +126,19 @@ export const CardsTable = ({
                 </Td>
                 <Td>
                   {d.status === 'active' && (
-                    <Badge size="sm" colorScheme={'green'}>
+                    <Tag size="sm" colorScheme={'green'}>
                       Active
-                    </Badge>
+                    </Tag>
                   )}
                   {d.status === 'inactive' && (
-                    <Badge size="sm" colorScheme={'yellow'}>
+                    <Tag size="sm" colorScheme={'yellow'}>
                       Suspended
-                    </Badge>
+                    </Tag>
                   )}
                   {d.status === 'canceled' && (
-                    <Badge size="sm" colorScheme={'red'}>
+                    <Tag size="sm" colorScheme={'red'}>
                       Blocked
-                    </Badge>
+                    </Tag>
                   )}
                 </Td>
                 <Td>
