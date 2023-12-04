@@ -56,6 +56,7 @@ export class TransactionService {
     // ...handle other cases
     /** @todo temporary capture -> hold */
     /** @todo issuing_authorization.updated -> increase captured amount */
+    /** @todo issuing_authorization.reversal -> decrease captured amount */
     /** @todo send Telegram message */
 
     return true;
