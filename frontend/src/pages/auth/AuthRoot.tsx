@@ -106,7 +106,6 @@ const AuthRootPage = ({
                 </Box>
                 <Container
                   maxW="container.xl"
-                  maxHeight="350px"
                   overflowY="auto"
                 >
                   {children}

@@ -15,6 +15,8 @@ import VaultsPage from './pages/auth/Vaults.tsx';
 import LogoutPage from './pages/auth/Logout.tsx';
 import VaultDetailPage from './pages/auth/VaultDetail.tsx';
 
+import './styles.css'
+
 const router = createBrowserRouter([
   {
     path: '/',

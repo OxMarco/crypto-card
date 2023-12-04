@@ -12,6 +12,7 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useToast,
 } from '@chakra-ui/react';
@@ -145,26 +146,32 @@ export const CardsTable = ({
                   {d.status !== 'canceled' && (
                     <HStack spacing="1">
                       {d.status === 'inactive' ? (
-                        <IconButton
+                        <Tooltip label='Pause Card' aria-label='A tooltip'  placement='auto'>
+                          <IconButton
                           icon={<FiPlay />}
                           variant="tertiary"
                           aria-label="Pause card"
                           onClick={() => unpauseCard(d.cardId)}
                         />
+                        </Tooltip>
                       ) : (
+                        <Tooltip label='Unpause Card' aria-label='A tooltip'  placement='auto'>
                         <IconButton
                           icon={<FiPause />}
                           variant="tertiary"
-                          aria-label="Unause card"
+                          aria-label="Unpause card"
                           onClick={() => pauseCard(d.cardId)}
                         />
+                        </Tooltip>
                       )}
+                        <Tooltip label='Block Card' aria-label='A tooltip'  placement='auto'>
                       <IconButton
                         icon={<FiSlash />}
                         variant="tertiary"
                         aria-label="Block card"
                         onClick={() => blockCard(d.cardId)}
                       />
+                      </Tooltip>
                     </HStack>
                   )}
                 </Td>
