@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { FiPause, FiPlay, FiSlash } from 'react-icons/fi';
 import { handleResponse } from '../utils/response-helper';
+import api, { getCards } from '../utils/axios.interceptor';
 
 export const CardsTable = ({
   props,
@@ -33,28 +34,14 @@ export const CardsTable = ({
   }, [accessToken]);
 
   const load = async () => {
-    const res = await fetch(`http://localhost:3000/card`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+    const res = await getCards();
     if (await handleResponse(res, toast, '', 'Failed to load cards')) {
-      const cards = await res.json();
-      setCards(cards);
+      setCards(res.data);
     }
   };
 
   const pauseCard = async (cardId: string) => {
-    const res = await fetch(`http://localhost:3000/card`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ cardId, status: 'inactive' }),
-    });
+    const res = await api.put(`/card`, JSON.stringify({ cardId, status: 'inactive' }));
     if (
       await handleResponse(
         res,
@@ -68,14 +55,7 @@ export const CardsTable = ({
   };
 
   const unpauseCard = async (cardId: string) => {
-    const res = await fetch(`http://localhost:3000/card`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ cardId, status: 'active' }),
-    });
+    const res = await api.put(`/card`, JSON.stringify({ cardId, status: 'active' }));
 
     if (
       await handleResponse(
@@ -90,14 +70,7 @@ export const CardsTable = ({
   };
 
   const blockCard = async (cardId: string) => {
-    const res = await fetch(`http://localhost:3000/card`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({ cardId, status: 'canceled' }),
-    });
+    const res = await api.put(`/card`, JSON.stringify({ cardId, status: 'canceled' }));
     if (
       await handleResponse(
         res,

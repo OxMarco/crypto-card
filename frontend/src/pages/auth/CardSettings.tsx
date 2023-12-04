@@ -15,6 +15,7 @@ import {
 import PaymentCard from '../../components/PaymentCard';
 import AuthRootPage from './AuthRoot';
 import { AppContext } from '../../context';
+import api from '../../utils/axios.interceptor';
 
 const CardSettingsPage = () => {
   const cardId = '65672eec595c1dc89f5271b5';
@@ -25,14 +26,8 @@ const CardSettingsPage = () => {
 
   useEffect(() => {
     const load = async () => {
-      const res = await fetch(`http://localhost:3000/card/get/${cardId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const card = await res.json();
+      const res = await api.get(`http://localhost:3000/card/get/${cardId}`);
+      const card = await res.data;
       setCard(card);
       console.log('card', card);
     };

@@ -13,6 +13,7 @@ import {
   Tr,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import api from '../utils/axios.interceptor';
 
 export const TransactionsTable = ({
   props,
@@ -28,15 +29,9 @@ export const TransactionsTable = ({
   }, [accessToken]);
 
   const load = async () => {
-    const res = await fetch(`http://localhost:3000/transaction`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-    const transactions = await res.json();
-    console.log('transctions', transactions);
+    const res = await api.get(`http://localhost:3000/transaction`);
+
+    const transactions = await res.data;
     setTransactions(transactions);
   };
 

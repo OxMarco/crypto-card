@@ -3,6 +3,7 @@ import { useAccount, useNetwork, useSignMessage } from 'wagmi';
 import { SiweMessage } from 'siwe';
 import { Button, Icon, Spinner } from '@chakra-ui/react';
 import { FiLock } from 'react-icons/fi';
+import api from '../utils/axios.interceptor';
 
 const SignInButton = ({
   onSuccess,
@@ -19,8 +20,8 @@ const SignInButton = ({
 
   const fetchNonce = async () => {
     try {
-      const nonceRes = await fetch('http://localhost:3000/auth/' + address);
-      const res = await nonceRes.json();
+      const nonceRes = await api.get('/auth/' + address);
+      const res = await nonceRes.data;
       const nonce = res.nonce;
 
       setState((x) => ({ ...x, nonce }));
@@ -63,24 +64,18 @@ const SignInButton = ({
       });
 
       // Verify signature
-      const verifyRes = await fetch('http://localhost:3000/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const verifyRes = await api.post('/auth/login', JSON.stringify({
           wallet: address,
           message: JSON.stringify(message),
           signature,
-        }),
-      });
-      if (!verifyRes.ok) {
-        const errorResponse = await verifyRes.json();
-        console.error(errorResponse);
+        }));
+
+      if (!verifyRes.data.id) {
+        const errorResponse = await verifyRes.data;
         throw new Error(errorResponse);
       }
 
-      const data = await verifyRes.json();
+      const data = await verifyRes.data;
 
       setState((x) => ({ ...x, loading: false }));
       onSuccess(data);
