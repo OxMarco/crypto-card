@@ -29,6 +29,7 @@ import SignInButton from '../components/SignInButton';
 import Menu from '../components/Menu';
 import { AppContext } from '../context';
 import { FiPhone } from 'react-icons/fi';
+import api from '../utils/axios.interceptor';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
@@ -118,14 +119,9 @@ export const LoginPage = () => {
   };
 
   const signUp = async (data: any) => {
-    const res = await fetch('http://localhost:3000/user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    const user = await res.json();
+    const res = await api.post('/user', JSON.stringify(data));
+    console.log(res)
+    const user = await res.data;
     console.log(user);
     console.log(res.status);
     console.log(res);

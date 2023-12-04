@@ -17,6 +17,7 @@ import {
   Tag,
 } from '@chakra-ui/react';
 import { handleResponse } from '../utils/response-helper';
+import api from '../utils/axios.interceptor';
 
 const NewCardModal = ({
   accessToken,
@@ -33,17 +34,10 @@ const NewCardModal = ({
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const res = await fetch(`http://localhost:3000/card`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
+    const res = await api.post(`/card`, JSON.stringify({
         type: cardType,
         currency,
-      }),
-    });
+      }));
 
     if (
       await handleResponse(
