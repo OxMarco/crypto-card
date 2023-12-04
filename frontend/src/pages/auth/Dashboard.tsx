@@ -1,4 +1,6 @@
 import {
+  Box,
+  Flex,
   Grid,
   GridItem,
   SimpleGrid,
@@ -9,21 +11,22 @@ import {
 } from '@chakra-ui/react';
 import AuthRootPage from './AuthRoot';
 import { UserProfile } from '../../components/UserProfile';
+import { formatAmount } from '../../utils/moneyFormat';
 
 const stats = [
-  { title: 'Wallet Balance', value: '$10,000' },
-  { title: 'Total Expenses', value: '$1,000' },
+  { title: 'Wallet Balance', value: 10000 },
+  { title: 'Total Expenses', value: 1000 },
 ];
 
 const DashboardPage = () => {
   return (
     <AuthRootPage title="Dashboard">
-      <Grid templateColumns="repeat(2, 1fr)" gap={6} py={6}>
-        <GridItem colSpan={1}>
+      <Box>
+      <Flex direction={{ base: 'column', sm: 'row' }} align={'center'} gap={6} py={6} w='full'>
+        <Box flex={1}>
           <UserProfile />
-        </GridItem>
-        <GridItem colSpan={1}>
-          <SimpleGrid columns={1} gap={{ base: '5', md: '6' }}>
+        </Box>
+        <Flex w={{base: '100%', md: '50%'}} direction='column' gap={6} py={6}>
             {stats.map((stat: any, index: number) => (
               <Stat
                 key={index}
@@ -35,12 +38,12 @@ const DashboardPage = () => {
                 bg={mode('white', 'gray.700')}
               >
                 <StatLabel>{stat.title}</StatLabel>
-                <StatNumber>{stat.value}</StatNumber>
+                <StatNumber fontWeight="700" fontSize="40px" color={ stat.value > 9000 ? 'green' : 'red' }>{formatAmount(stat.value)}</StatNumber>
               </Stat>
             ))}
-          </SimpleGrid>
-        </GridItem>
-      </Grid>
+          </Flex>
+      </Flex>
+      </Box>
     </AuthRootPage>
   );
 };

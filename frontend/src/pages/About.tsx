@@ -58,9 +58,9 @@ const AboutPage = () => {
   });
 
   return (
-    <Box bgColor={'gray.100'}>
+    <Box bgColor={'gray.100'} minH={'100vh'}>
       <Menu />
-      <Container maxW={'3xl'} h={'100vh'}>
+      <Container maxW={'3xl'}>
         <Stack as={Box} textAlign={'center'} spacing={{ base: '8', md: '10' }}>
           <Stack fontSize={{ base: '2xl', sm: '4xl', md: '6xl' }}>
             <Text fontWeight={600}>About</Text>

@@ -12,7 +12,7 @@ import vaults from '../../data/vaults.json';
 const VaultsPage = () => {
   return (
     <AuthRootPage title="Vaults">
-      <SimpleGrid columns={2} gap={{ base: '5', md: '6' }}>
+      <SimpleGrid my={'2'} columns={2} gap={{ base: '5', md: '6' }}>
         {vaults.vaults.map((vault: any, index: number) => (
           <Card key={index} as="a" href={`/vaults/${vault.chainSlug}`}>
             <CardBody>
