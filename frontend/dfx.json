@@ -1,8 +1,8 @@
 {
   "canisters": {
-      "website": {
-          "type": "assets",
-          "source": ["dist"]
-      }
+    "website": {
+      "type": "assets",
+      "source": ["dist"]
+    }
   }
 }

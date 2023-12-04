@@ -48,8 +48,8 @@ const Menu = () => {
                 <Button as="a" href="/login" w="100%">
                   Login
                 </Button>
-                <Button as="a" href="/contacts" w="100%">
-                  Contacts
+                <Button as="a" href="/faq" w="100%">
+                  FAQ
                 </Button>
               </VStack>
             </DrawerBody>

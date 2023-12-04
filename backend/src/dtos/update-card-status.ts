@@ -1,6 +1,6 @@
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
-export class UpdateCardDto {
+export class UpdateCardStatusDto {
   @IsString()
   @IsNotEmpty()
   cardId: string;
