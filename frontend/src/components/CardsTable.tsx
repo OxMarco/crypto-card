@@ -35,7 +35,7 @@ export const CardsTable = ({
   }, [accessToken]);
 
   const load = async () => {
-    const res = await api.get(`/card/status`);
+    const res = await api.get(`/card`);
     if (await handleResponse(res, toast, '', 'Failed to load cards')) {
       setCards(res.data);
     }

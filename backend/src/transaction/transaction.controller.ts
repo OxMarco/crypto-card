@@ -15,11 +15,12 @@ import { TransactionEntity } from 'src/entities/transaction';
 import { Request, Response } from 'express';
 import { MongooseClassSerializerInterceptor } from 'src/interceptors/mongoose';
 import { PaginationInterceptor } from 'src/interceptors/pagination';
+import { Public } from 'src/decorators/public';
 
 @Controller('transaction')
 @ApiTags('transaction')
 @MongooseClassSerializerInterceptor(TransactionEntity)
-@UseInterceptors(PaginationInterceptor)
+//@UseInterceptors(PaginationInterceptor)
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
@@ -43,6 +44,7 @@ export class TransactionController {
     return await this.transactionService.getById(id);
   }
 
+  @Public()
   @Post('/webhook')
   async handleWebhook(
     @Req() req: RawBodyRequest<Request>,

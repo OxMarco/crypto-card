@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { DisputeModule } from './dispute/dispute.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { Web3Module } from './web3/web3.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     TransactionModule,
     DisputeModule,
     AuthModule,
+    Web3Module,
   ],
   controllers: [AppController],
   providers: [AppService],
