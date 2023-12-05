@@ -15,7 +15,8 @@
           "address": "0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c",
           "decimals": 6
         }
-      ]
+      ],
+      "balance": 30000
     },
     {
       "chainSlug": "avalanche",
@@ -32,7 +33,8 @@
           "address": "0xc891eb4cbdeff6e073e859e987815ed1505c2acd",
           "decimals": 6
         }
-      ]
+      ],
+      "balance": 450000
     },
     {
       "chainSlug": "arbitrum",
@@ -44,7 +46,8 @@
           "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
           "decimals": 6
         }
-      ]
+      ],
+      "balance": 300000
     }
   ]
 }

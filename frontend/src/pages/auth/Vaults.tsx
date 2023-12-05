@@ -5,9 +5,11 @@ import {
   HStack,
   SimpleGrid,
   Text,
+  VStack,
 } from '@chakra-ui/react';
 import AuthRootPage from './AuthRoot';
 import vaults from '../../data/vaults.json';
+import { formatAmount } from '../../utils/moneyFormat';
 
 const VaultsPage = () => {
   return (
@@ -17,11 +19,15 @@ const VaultsPage = () => {
           <Card key={index} as="a" href={`/vaults/${vault.chainSlug}`}>
             <CardBody>
               <HStack justify={'space-between'}>
+                <VStack>
                 <Avatar
                   size={'sm'}
                   src={`https://icons.llamao.fi/icons/chains/rsz_${vault.chainSlug}.jpg`}
                 />
-                <Text>{vault.chainSlug}</Text>
+                <Text textTransform='capitalize'>{vault.chainSlug}</Text>
+                </VStack>
+                <Text fontWeight="700">{formatAmount(vault.balance)}</Text>
+
               </HStack>
             </CardBody>
           </Card>
