@@ -26,7 +26,7 @@ const VaultsPage = () => {
                 />
                 <Text textTransform='capitalize'>{vault.chainSlug}</Text>
                 </VStack>
-                <Text fontWeight="700" fontSize="40px" color={ vault.balance > 9000 ? 'green' : 'red' }>{formatAmount(vault.balance)}</Text>
+                <Text fontWeight="700">{formatAmount(vault.balance)}</Text>
 
               </HStack>
             </CardBody>
