@@ -1,9 +1,6 @@
 import {
   Box,
   Flex,
-  Grid,
-  GridItem,
-  SimpleGrid,
   Stat,
   StatLabel,
   StatNumber,
@@ -13,12 +10,45 @@ import AuthRootPage from './AuthRoot';
 import { UserProfile } from '../../components/UserProfile';
 import { formatAmount } from '../../utils/moneyFormat';
 
+import Chart from "chart.js/auto";
+import { CategoryScale } from "chart.js";
+import ChartDataJson from '../../data/charts.json'
+import { useState } from 'react';
+import { Line } from 'react-chartjs-2';
+
 const stats = [
   { title: 'Wallet Balance', value: 10000 },
   { title: 'Total Expenses', value: 1000 },
 ];
 
+Chart.register(CategoryScale);
+
+
 const DashboardPage = () => {
+  const [chartData, setChartData] = useState({
+    labels: ChartDataJson.data.map(data => data.month), 
+    datasets: [
+      {
+        label: "Amount Spent Monthly",
+        data: ChartDataJson.data.map(data => data.spent),
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)'
+        ],
+        hoverOffset: 4,
+        borderColor: "black",
+        borderWidth: 1,
+        tension: 0.4,
+        fill: true,
+      }
+    ],
+  });
+
   return (
     <AuthRootPage title="Dashboard">
       <Box>
@@ -43,6 +73,34 @@ const DashboardPage = () => {
             ))}
           </Flex>
       </Flex>
+
+      <Flex shadow='md' p='2' border='0.5px solid' borderColor='#e1e1e1'>
+      <Line
+      style={{
+        height: '500px',
+        width: '100vw',
+      }}
+        data={chartData}
+        options={{
+          plugins: {
+            title: {
+              display: true,
+              font: {
+                size: 24,
+                weight: 500,
+                style: 'italic'
+              },
+              text: "Monthly spendings peak"
+            },
+            legend: {
+              display: false
+            },
+            
+          }
+        }}
+      />
+      </Flex>
+
       </Box>
     </AuthRootPage>
   );
