@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { createWalletClient, http } from 'viem';
-import { mainnet } from 'viem/chains';
+import { createPublicClient, createWalletClient, http } from 'viem';
+import { sepolia } from 'viem/chains';
 import { privateKeyToAccount } from 'viem/accounts';
-import AccountantABI from './accountant.json';
+import { AccountantABI } from './accountant.abi';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class Web3Service {
   private accountantAddress: string;
   private account: any;
-  private web3Client: any;
+  private publicClient: any;
+  private privateClient: any;
   private eurToken: string;
   private usdToken: string;
 
@@ -22,9 +23,13 @@ export class Web3Service {
       configService.get<string>('ACCOUNTANT_ADDRESS') || '';
 
     this.account = privateKeyToAccount(privateKey);
-    this.web3Client = createWalletClient({
+    this.publicClient = createPublicClient({
+      chain: sepolia,
+      transport: http(),
+    });
+    this.privateClient = createWalletClient({
       account: this.account,
-      chain: mainnet,
+      chain: sepolia,
       transport: http(),
     });
   }
@@ -37,7 +42,7 @@ export class Web3Service {
 
   async getBalance(user: string, currency: 'eur' | 'usd') {
     const token = this._getToken(currency);
-    const balance = await this.web3Client.readContract({
+    const balance = await this.publicClient.readContract({
       address: this.accountantAddress,
       abi: AccountantABI,
       functionName: 'checkBalance',
@@ -49,25 +54,25 @@ export class Web3Service {
 
   async acquireHold(user: string, currency: 'eur' | 'usd', amount: number) {
     const token = this._getToken(currency);
-    const { request } = await this.web3Client.simulateContract({
+    const { request } = await this.publicClient.simulateContract({
       account: this.account,
       address: this.accountantAddress,
       abi: AccountantABI,
       functionName: 'acquireHold',
       args: [user, token, amount],
     });
-    await this.web3Client.writeContract(request);
+    await this.privateClient.writeContract(request);
   }
 
   async releaseHold(user: string, currency: 'eur' | 'usd', amount: number) {
     const token = this._getToken(currency);
-    const { request } = await this.web3Client.simulateContract({
+    const { request } = await this.publicClient.simulateContract({
       account: this.account,
       address: this.accountantAddress,
       abi: AccountantABI,
       functionName: 'releaseHold',
       args: [user, token, amount],
     });
-    await this.web3Client.writeContract(request);
+    await this.privateClient.writeContract(request);
   }
 }
