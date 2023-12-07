@@ -4,7 +4,7 @@ import { redirect } from 'react-router-dom';
 const api = axios.create({
   baseURL: 'http://localhost:3000', // our API base URL
 });
-
+console.log()
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('accessToken');
@@ -25,11 +25,11 @@ api.interceptors.response.use(
   },
 
   function (error) {
-    console.log('Error', error);
-    if (error.response.status === 401) {
+    if (error.response.status === 401 && window.location.pathname !== '/login') {
       window.location.replace('/login');
       return Promise.reject(error);
-    }
+    } 
+    return error;
   },
 );
 

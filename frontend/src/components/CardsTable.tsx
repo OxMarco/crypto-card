@@ -197,7 +197,7 @@ export const CardsTable = ({
                   )}
                 </Td>
                 <Td>
-                  <Button as="a" href="/cards/detail" variant="outline">
+                  <Button as="a" href={`/cards/detail/${d.id}`} variant="outline">
                     View
                   </Button>
                 </Td>
