@@ -120,7 +120,7 @@ export const LoginPage = () => {
 
   const signUp = async (data: any) => {
     const res = await api.post('/user', JSON.stringify(data));
-    console.log(res)
+    console.log(res);
     const user = await res.data;
     console.log(user);
     console.log(res.status);

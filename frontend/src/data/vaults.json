@@ -1,26 +1,27 @@
 {
   "vaults": [
     {
-      "chainSlug": "ethereum",
-      "chainId": 1,
-      "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+      "chainSlug": "sepolia",
+      "chainId": 11155111,
+      "ccipChainId": 0,
+      "address": "0x1F380FAE62A39661a87D4c72b0C9d31f9815B5C3",
       "tokens": [
         {
-          "symbol": "USDC",
-          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
-          "decimals": 6
+          "symbol": "NUSD",
+          "address": "0xB1282B067a4D355aa4Ad6D1C7E94a788A9420eC3",
+          "decimals": 18
         },
         {
-          "symbol": "EURC",
-          "address": "0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c",
-          "decimals": 6
+          "symbol": "NEUR",
+          "address": "0x934d2F68c30dfF76D04A6975493d7E8AEadC98f0",
+          "decimals": 18
         }
-      ],
-      "balance": 30000
+      ]
     },
     {
       "chainSlug": "avalanche",
       "chainId": 43114,
+      "ccipChainId": 5,
       "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       "tokens": [
         {
@@ -33,12 +34,12 @@
           "address": "0xc891eb4cbdeff6e073e859e987815ed1505c2acd",
           "decimals": 6
         }
-      ],
-      "balance": 450000
+      ]
     },
     {
       "chainSlug": "arbitrum",
       "chainId": 42161,
+      "ccipChainId": 30,
       "address": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
       "tokens": [
         {
@@ -46,8 +47,7 @@
           "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
           "decimals": 6
         }
-      ],
-      "balance": 300000
+      ]
     }
   ]
 }

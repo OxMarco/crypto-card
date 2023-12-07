@@ -64,11 +64,14 @@ const SignInButton = ({
       });
 
       // Verify signature
-      const verifyRes = await api.post('/auth/login', JSON.stringify({
+      const verifyRes = await api.post(
+        '/auth/login',
+        JSON.stringify({
           wallet: address,
           message: JSON.stringify(message),
           signature,
-        }));
+        }),
+      );
 
       if (!verifyRes.data.id) {
         const errorResponse = await verifyRes.data;

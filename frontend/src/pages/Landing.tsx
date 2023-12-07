@@ -8,13 +8,16 @@ const LandingPage = () => {
       <Menu />
       <OfferModal />
       <Container maxW={'8xl'} w="full">
-        <Flex direction={{ base: 'column', lg: 'row' }} justifyContent="center" alignItems="center">
-
+        <Flex
+          direction={{ base: 'column', lg: 'row' }}
+          justifyContent="center"
+          alignItems="center"
+        >
           <Stack
             direction="column"
             align={{ base: 'center', lg: 'start' }}
             justify="center"
-            height='100vh'
+            height="100vh"
             as={Box}
             textAlign={{ base: 'center', lg: 'start' }}
             spacing={{ base: '8', md: '10' }}
@@ -25,10 +28,17 @@ const LandingPage = () => {
               fontSize={{ base: '3xl', md: '5xl', lg: '6xl' }}
               lineHeight={'110%'}
             >
-              <Text fontWeight={400}><span style={{
-                color: '#7F00FF',
-                fontWeight: '700'
-              }}>Crypto</span> cards typically suck...</Text>
+              <Text fontWeight={400}>
+                <span
+                  style={{
+                    color: '#7F00FF',
+                    fontWeight: '700',
+                  }}
+                >
+                  Crypto
+                </span>{' '}
+                cards typically suck...
+              </Text>
               <Text
                 fontWeight={600}
                 as={'span'}
@@ -38,7 +48,11 @@ const LandingPage = () => {
                 This one doesn&apos;t!
               </Text>
             </Stack>
-            <Text color={'gray.500'} fontSize={'large'} maxW={{ base: '100%', lg: '75%' }}>
+            <Text
+              color={'gray.500'}
+              fontSize={'large'}
+              maxW={{ base: '100%', lg: '75%' }}
+            >
               The first DAO-managed, self-funded, free crypto card developed as
               a public good for the whole web3 community featuring the cheapest
               crypto-fiat conversion rates on the market.
