@@ -3,7 +3,10 @@ import {
   Box,
   Button,
   Container,
-  Flex,
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   FormControl,
   FormLabel,
   Heading,
@@ -53,6 +56,7 @@ export const LoginPage = () => {
   const [city, setCity] = useState<string>('Berlin');
   const [countryCode, setCountryCode] = useState<string>('DE');
   const [poBox, setPoBox] = useState<string>('10212');
+  const [errors, setErrors] = useState<string[]>([]);
 
   useEffect(() => {
     if (accessToken !== '') {
@@ -119,19 +123,32 @@ export const LoginPage = () => {
   };
 
   const signUp = async (data: any) => {
-    const res = await api.post('/user', JSON.stringify(data));
-    console.log(res);
-    const user = await res.data;
-    console.log(user);
-    console.log(res.status);
-    console.log(res);
+    try {
+      const res = await api.post('/user', JSON.stringify(data));
+      if (res?.response.data.statusCode === 400) {
+          setErrors(res?.response.data.message)
+      } else if(res?.response.data.statusCode === 201){
+      const user = await res?.data;
+      console.log(user);
+      console.log(res?.status);
+    } else {
+      setErrors(["The error is from our end... We're trying to resolve it as soon as possible"])
+    }
+    } catch(e) {
+      console.log(e);
+    }
   };
+
+  console.log(typeof(errors));
+
+
 
   return (
     <>
       <Menu />
       <Box
         bgGradient={{ base: 'white', sm: 'linear(to-r, blue.600, blue.400)' }}
+        minH='100vh'
         py={{ base: '12', md: '24' }}
       >
         <Container
@@ -201,6 +218,26 @@ export const LoginPage = () => {
                       </Text>
                     </Stack>
                   </Stack>
+                  {
+                    errors.length > 0 && 
+                    <Alert status='error'>
+                    <AlertIcon />
+                    {/* <AlertTitle>Error!</AlertTitle> */}
+                    <AlertDescription>
+                    {Array.isArray(errors) ? (
+                      // Render multiple messages
+                      <ul>
+                        {errors.map((msg, index) => (
+                          <Text key={index}>{msg}</Text>
+                        ))}
+                      </ul>
+                    ) : (
+                      // Render a single message
+                      <p>{errors}</p>
+                    )}
+                    </AlertDescription>
+                  </Alert>
+                  }
                   <form
                     onSubmit={(e) => {
                       e.preventDefault();
