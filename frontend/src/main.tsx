@@ -56,7 +56,7 @@ const router = createBrowserRouter([
     element: <CardsPage />,
   },
   {
-    path: '/cards/detail',
+    path: '/cards/detail/:id',
     element: <CardDetailPage />,
   },
   {
