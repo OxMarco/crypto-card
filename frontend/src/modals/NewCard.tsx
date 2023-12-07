@@ -34,10 +34,13 @@ const NewCardModal = ({
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const res = await api.post(`/card`, JSON.stringify({
+    const res = await api.post(
+      `/card`,
+      JSON.stringify({
         type: cardType,
         currency,
-      }));
+      }),
+    );
 
     if (
       await handleResponse(

@@ -21,7 +21,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const storedCardholderId = localStorage.getItem('cardholderId');
 
     if (storedAccessToken) {
-      console.log('storedAccessToken', storedAccessToken);
       setAccessToken(storedAccessToken);
     }
     if (storedId) {

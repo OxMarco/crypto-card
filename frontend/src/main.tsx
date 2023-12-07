@@ -15,7 +15,7 @@ import VaultsPage from './pages/auth/Vaults.tsx';
 import LogoutPage from './pages/auth/Logout.tsx';
 import VaultDetailPage from './pages/auth/VaultDetail.tsx';
 
-import './styles.css'
+import './styles.css';
 
 const router = createBrowserRouter([
   {
@@ -66,9 +66,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <>
     <Providers>
       <RouterProvider router={router} />
     </Providers>
-  </React.StrictMode>,
+  </>,
 );
