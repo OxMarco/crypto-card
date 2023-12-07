@@ -18,18 +18,21 @@ import PaymentCard from '../../components/PaymentCard';
 import { AppContext } from '../../context';
 import api from '../../utils/axios.interceptor';
 import { handleResponse } from '../../utils/response-helper';
+import { useParams } from 'react-router-dom';
 
 const CardSettingsPage = () => {
   const toast = useToast();
-  const cardId = '65672eec595c1dc89f5271b5';
   const { accessToken } = useContext(AppContext);
   const [card, setCard] = useState<any>();
   const [singleTxLimit, setSingleTxLimit] = useState<number>(1000);
   const [monthlyLimit, setMonthlyLimit] = useState<number>(5000);
 
+  const route = useParams()
+
+
   useEffect(() => {
     const load = async () => {
-      const res = await api.get(`http://localhost:3000/card/get/${cardId}`);
+      const res = await api.get(`/card/get/${route.id}`);
       const card = await res.data;
       setCard(card);
       console.log('card', card);
@@ -41,18 +44,12 @@ const CardSettingsPage = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    const res = await fetch(`http://localhost:3000/card/limits`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify({
-        cardId,
+    const res = await api.put(`/card/limits`, JSON.stringify({
+        cardId: card.cardId,
         monthlyLimit,
         singleTxLimit,
       }),
-    });
+    );
 
     await handleResponse(
       res,

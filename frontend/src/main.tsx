@@ -60,7 +60,7 @@ const router = createBrowserRouter([
     element: <CardDetailPage />,
   },
   {
-    path: '/cards/settings',
+    path: '/cards/:id/settings',
     element: <CardSettingsPage />,
   },
 ]);

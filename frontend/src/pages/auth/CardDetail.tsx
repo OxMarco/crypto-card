@@ -39,7 +39,7 @@ const CardDetailPage = () => {
       title="Card and Transactions Details"
       back={true}
       button={
-        <Button as="a" href="/cards/settings" colorScheme={'blue'}>
+        <Button as="a" href={`/cards/${route.id}/settings`} colorScheme={'blue'}>
           Edit Card
         </Button>
       }
