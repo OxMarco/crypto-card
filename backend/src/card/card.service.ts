@@ -11,7 +11,7 @@ export class CardService {
   constructor(
     @InjectModel(Card.name) private cardModel: Model<Card>,
     private stripeService: StripeService,
-  ) {}
+  ) { }
 
   async getAll(cardholderId: string): Promise<Card[]> {
     return await this.cardModel.find({ cardholderId }).exec();
@@ -102,8 +102,15 @@ export class CardService {
     const updatedCard = await this.cardModel
       .findOneAndUpdate(
         { cardId: updateCardLimitsDto.cardId, cardholderId: cardholderId },
-        { limits: updateCardLimitsDto },
-        { new: true },
+        {
+          $set: {
+            limits: {
+              monthlyLimit: updateCardLimitsDto.monthlyLimit,
+              singleTxLimit: updateCardLimitsDto.singleTxLimit,
+            }
+          }
+        },
+        { new: true, upsert: true }
       )
       .exec();
     if (!updatedCard) throw new NotFoundException({ error: 'Card not found' });

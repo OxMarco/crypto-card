@@ -31,6 +31,18 @@ export class Card {
 
   @Prop({ required: true })
   status: string;
+
+  @Prop({
+    type: {
+      monthlyLimit: { type: Number, required: false },
+      singleTxLimit: { type: Number, required: false },
+    },
+    required: false,
+  })
+  limits?: {
+    monthlyLimit?: number;
+    singleTxLimit?: number;
+  };
 }
 
 export const CardSchema = SchemaFactory.createForClass(Card);
