@@ -20,6 +20,7 @@ import {
   TabPanels,
   Tabs,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useSignMessage } from 'wagmi';
@@ -33,6 +34,7 @@ import api from '../utils/axios.interceptor';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const toast = useToast();
   const { isConnected } = useAccount();
   const {
     data: signMessageData,
@@ -46,7 +48,7 @@ export const LoginPage = () => {
 
   const [firstName, setFirstName] = useState<string>('John');
   const [lastName, setLastName] = useState<string>('Doe');
-  const [dob, setDob] = useState<Date>();
+  const [dob, setDob] = useState<string>(new Date().toISOString().split('T')[0]);
   const [email, setEmail] = useState<string>('john@doe.com');
   const [phone, setPhone] = useState<string>('+420123456789');
   const [address, setAddress] = useState<string>('Am Kreuzberg 3');
@@ -105,6 +107,8 @@ export const LoginPage = () => {
       firstName +
       ' ' +
       lastName +
+      ' born on ' +
+      dob +
       ', living in ' +
       address +
       ' ' +
@@ -119,12 +123,34 @@ export const LoginPage = () => {
   };
 
   const signUp = async (data: any) => {
-    const res = await api.post('/user', JSON.stringify(data));
-    console.log(res);
-    const user = await res.data;
-    console.log(user);
-    console.log(res.status);
-    console.log(res);
+    try {
+      console.log("data", data)
+      await api.post('/user', JSON.stringify(data));
+      toast({
+        title: "Success",
+        description: "User created successfully",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      })
+    } catch (e: any) {
+      if(e.response.status === 400)
+        toast({
+          title: "Error",
+          description: e.response.data.message[0],
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        })
+      else
+        toast({
+          title: "Error",
+          description: e.response.statusText,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        })
+    }
   };
 
   return (
@@ -202,9 +228,9 @@ export const LoginPage = () => {
                     </Stack>
                   </Stack>
                   <form
-                    onSubmit={(e) => {
+                    onSubmit={(e: any) => {
                       e.preventDefault();
-                      signTos(e);
+                      signTos();
                     }}
                   >
                     <Stack spacing="6">
@@ -286,8 +312,8 @@ export const LoginPage = () => {
                           type="date"
                           id="dob"
                           name="dob"
-                          onChange={(e) => setDob(new Date(e.target.value))}
-                          value={dob?.toISOString().substr(0, 10)}
+                          onChange={(e: any) => setDob(new Date(e.target.value).toISOString().split('T')[0])}
+                          value={dob}
                         />
                       </FormControl>
                       <Stack spacing={4}>

@@ -16,3 +16,4 @@ broadcast/
 
 # Node modules
 node_modules/
+venv/

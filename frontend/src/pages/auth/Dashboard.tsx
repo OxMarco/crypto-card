@@ -1,6 +1,8 @@
 import {
   Box,
   Flex,
+  Heading,
+  Stack,
   Stat,
   StatLabel,
   StatNumber,
@@ -26,16 +28,9 @@ const DashboardPage = () => {
     labels: ChartDataJson.data.map((data) => data.month),
     datasets: [
       {
-        label: 'Amount Spent Monthly',
         data: ChartDataJson.data.map((data) => data.spent),
         backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 205, 86, 0.2)',
           'rgba(75, 192, 192, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(201, 203, 207, 0.2)',
         ],
         hoverOffset: 4,
         borderColor: 'black',
@@ -77,8 +72,6 @@ const DashboardPage = () => {
               >
                 <StatLabel>{stat.title}</StatLabel>
                 <StatNumber
-                  fontWeight="700"
-                  fontSize="40px"
                   color={stat.value > 9000 ? 'green' : 'red'}
                 >
                   {stat.value}
@@ -88,31 +81,24 @@ const DashboardPage = () => {
           </Flex>
         </Flex>
 
-        <Flex shadow="md" p="2" border="0.5px solid" borderColor="#e1e1e1">
-          <Line
-            style={{
-              height: '500px',
-              width: '100vw',
-            }}
-            data={chartData}
-            options={{
-              plugins: {
-                title: {
-                  display: true,
-                  font: {
-                    size: 24,
-                    weight: 500,
-                    style: 'italic',
+        <Stack shadow="md" direction="column">
+          <Heading size="md">Monthly Expenses</Heading>
+          <Box p="2" border="0.5px solid">
+            <Line
+              data={chartData}
+              options={{
+                plugins: {
+                  title: {
+                    display: false,
                   },
-                  text: 'Monthly spendings peak',
+                  legend: {
+                    display: false,
+                  },
                 },
-                legend: {
-                  display: false,
-                },
-              },
-            }}
-          />
-        </Flex>
+              }}
+            />
+          </Box>
+        </Stack>
       </Box>
     </AuthRootPage>
   );

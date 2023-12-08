@@ -29,15 +29,7 @@ const LandingPage = () => {
               lineHeight={'110%'}
             >
               <Text fontWeight={400}>
-                <span
-                  style={{
-                    color: '#7F00FF',
-                    fontWeight: '700',
-                  }}
-                >
-                  Crypto
-                </span>{' '}
-                cards typically suck...
+                Crypto cards typically suck...
               </Text>
               <Text
                 fontWeight={600}

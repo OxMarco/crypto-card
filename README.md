@@ -1,6 +1,9 @@
 # Crypto cards done right
 A public goods project aimed at creating the cheapest crypto debit card, with no hidden fees or costs, nor any centralised entity controlling it.
 
+## Architecture
+![architecture](architecture.png)
+
 ## Features
 - Create multiple virtual and physical cards
 - Top up your card with any crypto asset and from any EVM chain
