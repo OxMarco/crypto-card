@@ -2,7 +2,7 @@ import axios from 'axios';
 import { redirect } from 'react-router-dom';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000', // our API base URL
+  baseURL: 'http://localhost:3000',
 });
 
 api.interceptors.request.use(
@@ -19,7 +19,7 @@ api.interceptors.request.use(
   },
 );
 
-api.interceptors.response.use(
+/*api.interceptors.response.use(
   (response) => {
     return response;
   },
@@ -31,6 +31,6 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
   },
-);
+);*/
 
 export default api;
